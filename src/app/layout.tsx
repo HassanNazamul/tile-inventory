@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { ThemeProvider } from "@/components/theme-provider";
+import BreadCrumb from "./_common/bread-crumb";
+import Header from "./_common/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +28,57 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              <Header />
+              <BreadCrumb />
+              {children}
+            </SidebarInset>
+          </SidebarProvider>
+        </ThemeProvider>
+
       </body>
     </html>
   );
 }
+
+
+{/* <>
+<header className="flex h-16 items-center gap-2 px-4">
+  <Separator orientation="vertical" className="mr-2 h-4" />
+  <Breadcrumb>
+    <BreadcrumbList>
+      <BreadcrumbItem className="hidden md:block">
+        <BreadcrumbLink href="#">
+          Building Your Application
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator className="hidden md:block" />
+      <BreadcrumbItem>
+        <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+      </BreadcrumbItem>
+    </BreadcrumbList>
+  </Breadcrumb>
+</header>
+<div className="flex flex-1 flex-col gap-4 p-4">
+<div className="grid auto-rows-min gap-4 md:grid-cols-3">
+    <div className="aspect-video rounded-xl bg-muted/50" />
+    <div className="aspect-video rounded-xl bg-muted/50" />
+    <div className="aspect-video rounded-xl bg-muted/50" />
+  </div>
+  <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+</div>
+</> */}
