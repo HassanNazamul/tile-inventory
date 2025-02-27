@@ -2,7 +2,7 @@
 import React from 'react'
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-// import Image from 'next/image';
+import Image from 'next/image';
 
 const Header = () => {
     return (
@@ -10,14 +10,14 @@ const Header = () => {
             {/* Logo on the left */}
             <div className="flex items-center space-x-2">
                 {/* Uncomment and adjust the Image component if needed */}
-                {/* <div className="relative w-12 h-12 max-w-[50px] max-h-[50px]">
+                <div className="relative w-12 h-12 max-w-[50px] max-h-[50px]">
                     <Image
                         src="/assets/nazx-logo.png"
                         alt="Logo"
                         layout="fill"
                         objectFit="contain"
                     />
-                </div> */}
+                </div>
                 <span className="font-bold text-sm">Inventory</span>
             </div>
 
