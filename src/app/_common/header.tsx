@@ -3,14 +3,16 @@ import React from 'react'
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const Header = () => {
     return (
-        <div className="flex items-center justify-between px-4 py-2 bg-purple-100 text-blue-950">
+        <div className="flex items-center justify-between px-4 py-2 bg-[hsl(var(--navbar))] text-foreground">
             {/* Logo on the left */}
             <div className="flex items-center space-x-2">
                 {/* Uncomment and adjust the Image component if needed */}
                 <div className="relative w-12 h-12 max-w-[50px] max-h-[50px]">
+
                     <Image
                         src="/assets/nazx-logo.png"
                         alt="Logo"
@@ -18,14 +20,16 @@ const Header = () => {
                         objectFit="contain"
                     />
                 </div>
-                <span className="font-bold text-sm">Inventory</span>
+                <Link href="/">
+                    <span className="font-bold text-sm">Inventory</span>
+                </Link>
             </div>
 
             {/* Buttons in the center */}
             <div className="flex space-x-4">
-                <Button variant="link" className="text-blue-950">Home</Button>
-                <Button variant="link" className="text-blue-950">About</Button>
-                <Button variant="link" className="text-blue-950">Contact</Button>
+                <Button variant="link" className="text-foreground">Home</Button>
+                <Button variant="link" className="text-foreground">About</Button>
+                <Button variant="link" className="text-foreground">Contact</Button>
             </div>
 
             {/* Profile logo on the right */}

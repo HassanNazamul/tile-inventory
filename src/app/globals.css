@@ -27,6 +27,8 @@ body {
 
     --background: 0 0% 100%;
 
+    --navbar: 330 100% 90%;
+
     --foreground: 224 71.4% 4.1%;
 
     --card: 0 0% 100%;
@@ -94,6 +96,8 @@ body {
   .dark {
 
     --background: 224 71.4% 4.1%;
+
+    --navbar: 330 40% 30%;
 
     --foreground: 210 20% 98%;
 

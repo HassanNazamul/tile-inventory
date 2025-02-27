@@ -1,10 +1,11 @@
 import ListComponent from "./list";
 
-export default function InvoPage() {
+export default function WarehouseList() {
+
     return (
         <>
             <div className="text-xl pl-5 ">
-                Invoice Page
+                Warehouse
             </div>
 
             <div className="p-10">
