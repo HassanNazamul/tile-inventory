@@ -1,17 +1,20 @@
 import ListComponent from "./list";
+import UserFormModal from "./warehouseForm";
 
 export default function WarehouseList() {
 
     return (
-        <>
-            <div className="text-xl pl-5 ">
+        <div>
+            <div className="text-xl">
                 Warehouse
             </div>
-
-            <div className="p-10">
-                <ListComponent />
+            <div>
+                <UserFormModal />
             </div>
 
-        </>
+            <div>
+                <ListComponent />
+            </div>
+        </div>
     );
 }
