@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function UserFormModal() {
-  const [formData, setFormData] = useState({ name: "", email: "" });
+  const [formData, setFormData] = useState({ name: "", location: "" });
+  const [open, setOpen] = useState(false); // Manage dialog state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,12 +16,13 @@ export default function UserFormModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("User Input:", formData);
+    setOpen(false); // Close dialog after submission
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Open Form</Button>
+        <Button variant="default" onClick={() => setOpen(true)}>Open Form</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -32,8 +34,8 @@ export default function UserFormModal() {
             <Input id="name" name="name" value={formData.name} onChange={handleChange} />
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} />
+            <Label htmlFor="location">Location</Label>
+            <Input id="location" name="location" type="text" value={formData.location} onChange={handleChange} />
           </div>
           <Button type="submit">Submit</Button>
         </form>
