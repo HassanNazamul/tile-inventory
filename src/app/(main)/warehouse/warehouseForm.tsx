@@ -5,7 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function UserFormModal() {
+interface UserFormModalProps {
+  refreshWarehouses: () => void;
+}
+
+export default function UserFormModal({ refreshWarehouses }: UserFormModalProps) {
   const [formData, setFormData] = useState({ name: "", location: "" });
   const [open, setOpen] = useState(false); // Manage dialog state
 
@@ -13,9 +17,22 @@ export default function UserFormModal() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("User Input:", formData);
+
+    const response = await fetch("/api/warehouse", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      setFormData({ name: "", location: "" });
+
+      // Refresh List
+      refreshWarehouses();
+    }
     setOpen(false); // Close dialog after submission
   };
 

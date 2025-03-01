@@ -10,9 +10,6 @@ export async function GET() {
     return NextResponse.json(result, { status: 200 });
 }
 
-
-
-
 export async function POST(req) {
     const data = await req.json();
     console.log(data);
