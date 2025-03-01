@@ -1,5 +1,5 @@
 import { mysqlTable, serial, int, varchar, timestamp, mysqlEnum } from 'drizzle-orm/mysql-core';
-import { boolean } from 'drizzle-orm/pg-core';
+// import { boolean } from 'drizzle-orm/pg-core';
 
 // Users Table
 export const users = mysqlTable('users', {
@@ -7,16 +7,25 @@ export const users = mysqlTable('users', {
     name: varchar({ length: 255 }).notNull(),
     email: varchar({ length: 255 }).notNull().unique(),
     password: varchar({ length: 255 }).notNull(),
-    acceptTerms: boolean().default(false).notNull()
+    // acceptTerms: boolean().default(false).notNull()
 });
 
 // Warehouses Table
+//old one by Nazrul
+// export const warehouses = mysqlTable('warehouses', {
+//     id: serial().primaryKey(),
+//     name: varchar({ length: 255 }).notNull(),
+//     location: varchar({ length: 255 }).notNull(),
+//     createdAt: timestamp().defaultNow().notNull(),
+//     updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
+// });
+
+// Warehouses Table
+//new by Nazmul
 export const warehouses = mysqlTable('warehouses', {
     id: serial().primaryKey(),
     name: varchar({ length: 255 }).notNull(),
     location: varchar({ length: 255 }).notNull(),
-    createdAt: timestamp().defaultNow().notNull(),
-    updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
 });
 
 // Categories Table
