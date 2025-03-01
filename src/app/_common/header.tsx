@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ModeToggle } from '@/components/mode-toogle';
 
 const Header = () => {
     return (
@@ -21,7 +22,7 @@ const Header = () => {
                     />
                 </div>
                 <Link href="/">
-                    <span className="font-bold text-sm">Inventory</span>
+                    <span className="font-bold text-xl">Inventory</span>
                 </Link>
             </div>
 
@@ -30,6 +31,8 @@ const Header = () => {
                 <Button variant="link" className="text-foreground">Home</Button>
                 <Button variant="link" className="text-foreground">About</Button>
                 <Button variant="link" className="text-foreground">Contact</Button>
+                <ModeToggle />
+
             </div>
 
             {/* Profile logo on the right */}
