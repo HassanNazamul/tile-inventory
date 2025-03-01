@@ -15,9 +15,9 @@ import {
   SquareTerminal,
 } from "lucide-react"
 
-import { NavMain } from "@/components/nav-main"
+import { NavMain } from "@/app/_common/sidebar/nav-main"
 // import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
+import { NavUser } from "@/app/_common/sidebar/nav-user"
 // import { TeamSwitcher } from "@/components/team-switcher"
 import { ModeToggle } from "@/components/mode-toogle";
 import {
