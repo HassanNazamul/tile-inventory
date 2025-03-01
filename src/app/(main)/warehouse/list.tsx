@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from '@/components/ui/button';
 
 interface Warehouse {
   id: number;
@@ -27,10 +28,24 @@ export default function ListComponent() {
     setWarehouses(data);
   };
 
+  const handleDelete = async (id: number) => {
+    const response = await fetch(`/api/warehouse`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    if (response.ok) {
+      setWarehouses((prevWarehouses) =>
+        prevWarehouses.filter((warehouse) => warehouse.id !== id)
+      );
+    }
+  };
+
   useEffect(() => {
     fetchWarehouses();
   }, []);
-
+ 
   console.log(warehouses);
 
   return (
@@ -54,6 +69,12 @@ export default function ListComponent() {
             >
               <TableCell className="font-medium">{item.name}</TableCell>
               <TableCell>{item.location}</TableCell>
+              <TableCell>
+                <Button>Edit</Button>
+              </TableCell>
+              <TableCell>
+              <Button onClick={() => handleDelete(item.id)}>Delete</Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
