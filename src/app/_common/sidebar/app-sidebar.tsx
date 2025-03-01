@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/app/_common/sidebar/nav-main"
+import Image from 'next/image';
 // import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/app/_common/sidebar/nav-user"
 // import { TeamSwitcher } from "@/components/team-switcher"
@@ -165,6 +166,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         {/* <TeamSwitcher teams={data.teams} /> */}
+        <div className="relative w-full max-w-[50px] max-h-[50px]">
+          <Image
+            src="/assets/nazx-logo.png"
+            alt="Logo"
+            layout="intrinsic"  // This allows for responsive scaling
+            width={50}   // Intrinsic width of the image
+            height={50}  // Intrinsic height of the image
+            objectFit="contain"
+          />
+        </div>
+
+
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
