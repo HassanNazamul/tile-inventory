@@ -25,15 +25,11 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "../theme/mode-toogle"
-
-
-
 
 // This is sample data.
 const data = {
   user: {
-    name: "Nazx ERP",
+    name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
@@ -56,53 +52,50 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
-      url: "#",
+      title: "Inventory",
+      url: "/inventory",
       icon: SquareTerminal,
-      isActive: false,
+      isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Add Inventory",
+          url: "/inventory",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Add Design Name",
+          url: "/inventory/products",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Add Brand",
+          url: "/inventory/categories",
+        },
+        {
+          title: "Add Size",
+          url: "/inventory/dimensions",
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
+      title: "Sales",
+      url: "/sales",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
+          title: "Manage Sales",
+          url: "/sales",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
+      title: "Warehouse",
+      url: "/warehouse",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
-          url: "#",
-        },
+          title: "Manage Warehouse",
+          url: "/warehouse",
+        }
+        ,
         {
           title: "Get Started",
           url: "#",
@@ -141,6 +134,7 @@ const data = {
       ],
     },
   ],
+
   projects: [
     {
       name: "Design Engineering",
@@ -160,21 +154,18 @@ const data = {
   ],
 }
 
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
-
       <SidebarFooter>
-        <ModeToggle />
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
