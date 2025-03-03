@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { ThemeProvider } from "@/components/theme-provider";
-import BreadCrumb from "../_common/bread-crumb";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/app/_common/sidebar/app-sidebar";
+import { ThemeProvider } from "@/app/_common/theme/theme-provider";
+import { Separator } from "@radix-ui/react-separator";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import Header from "../_common/header";
+
+
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,15 +44,46 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-              <Header />
-              <BreadCrumb />
+
+              {/* this is header component */}
+              {/* <Header /> */}
+
+
+
+              {/* Got from dashboad page */}
+              {/* this is header html element import from shadcn */}
+              {/* reference check dashboard/pages */}
+              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                <div className="flex items-center gap-2 px-4">
+                  <SidebarTrigger className="-ml-1" />
+                  <Separator orientation="vertical" className="mr-2 h-4" />
+                  <Breadcrumb>
+                    <BreadcrumbList>
+                      <BreadcrumbItem className="hidden md:block">
+                        <BreadcrumbLink href="#">
+                          Building Your Application
+                        </BreadcrumbLink>
+                      </BreadcrumbItem>
+                      <BreadcrumbSeparator className="hidden md:block" />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </BreadcrumbList>
+                  </Breadcrumb>
+                </div>
+
+              </header>
+
+
               {children}
+
             </SidebarInset>
           </SidebarProvider>
+
+
         </ThemeProvider>
 
       </body>
