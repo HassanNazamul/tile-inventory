@@ -1,4 +1,6 @@
 "use client"
+import React, { useState, useEffect } from 'react';
+import UserFormModal from './warehouseForm';
 import {
   Table,
   TableBody,
@@ -7,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState, useEffect } from "react";
+import { Button } from '@/components/ui/button';
 
 interface Warehouse {
   id: number;
@@ -18,29 +20,42 @@ interface Warehouse {
 }
 
 export default function ListComponent() {
-
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
 
-  // Fetch warehouses from API
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("/api/warehouse");
-      const data: Warehouse[] = await response.json();
-      setWarehouses(data);
-    }
-    fetchData();
-  }, []);
+  const fetchWarehouses = async () => {
+    const response = await fetch("/api/warehouse");
+    const data: Warehouse[] = await response.json();
+    setWarehouses(data);
+  };
 
+  const handleDelete = async (id: number) => {
+    const response = await fetch(`/api/warehouse`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    if (response.ok) {
+      setWarehouses((prevWarehouses) =>
+        prevWarehouses.filter((warehouse) => warehouse.id !== id)
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchWarehouses();
+  }, []);
+ 
   console.log(warehouses);
 
   return (
     <div>
+      <UserFormModal refreshWarehouses={fetchWarehouses} />
       <Table>
         <TableHeader className="bg-transparent">
           <TableRow className="*:border-border hover:bg-transparent [&>:not(:last-child)]:border-r">
             <TableHead>Warehouse Name</TableHead>
             <TableHead>Warehouse Location</TableHead>
-            {/* <TableHead>Location</TableHead> */}
             <TableHead>Edit</TableHead>
             <TableHead>Delete</TableHead>
           </TableRow>
@@ -54,14 +69,16 @@ export default function ListComponent() {
             >
               <TableCell className="font-medium">{item.name}</TableCell>
               <TableCell>{item.location}</TableCell>
-              {/* <TableCell>{item.location}</TableCell> */}
-              {/* <TableCell>{item.status}</TableCell> */}
-              {/* <TableCell className="text-right">{item.balance}</TableCell> */}
+              <TableCell>
+                <Button>Edit</Button>
+              </TableCell>
+              <TableCell>
+              <Button onClick={() => handleDelete(item.id)}>Delete</Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      {/* <p className="text-muted-foreground mt-4 text-center text-sm">Table with vertical lines</p> */}
     </div>
   );
 }

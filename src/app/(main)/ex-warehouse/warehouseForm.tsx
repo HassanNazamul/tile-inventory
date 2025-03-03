@@ -5,22 +5,41 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function UserFormModal() {
-  const [formData, setFormData] = useState({ name: "", email: "" });
+interface UserFormModalProps {
+  refreshWarehouses: () => void;
+}
+
+export default function UserFormModal({ refreshWarehouses }: UserFormModalProps) {
+  const [formData, setFormData] = useState({ name: "", location: "" });
+  const [open, setOpen] = useState(false); // Manage dialog state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("User Input:", formData);
+
+    const response = await fetch("/api/warehouse", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      setFormData({ name: "", location: "" });
+
+      // Refresh List
+      refreshWarehouses();
+    }
+    setOpen(false); // Close dialog after submission
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Open Form</Button>
+        <Button variant="default" onClick={() => setOpen(true)}>Open Form</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -32,8 +51,8 @@ export default function UserFormModal() {
             <Input id="name" name="name" value={formData.name} onChange={handleChange} />
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} />
+            <Label htmlFor="location">Location</Label>
+            <Input id="location" name="location" type="text" value={formData.location} onChange={handleChange} />
           </div>
           <Button type="submit">Submit</Button>
         </form>
