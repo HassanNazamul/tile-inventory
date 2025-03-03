@@ -1,11 +1,16 @@
+import { ThemeProvider } from "@/components/theme-provider"
+import { AppSidebar } from "@/components/app-sidebar"
+import BreadCrumb from "@/app/_common/bread-crumb"
+import { Separator } from "@/components/ui/separator"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "../globals.css";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { ThemeProvider } from "@/components/theme-provider";
-import BreadCrumb from "../_common/bread-crumb";
-import Header from "../_common/header";
+import { Geist, Geist_Mono } from "next/font/google"
+import "@/app/globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,19 +44,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
-              <Header />
               <BreadCrumb />
+
               {children}
+
             </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>
+
 
       </body>
     </html>
   );
 }
-
