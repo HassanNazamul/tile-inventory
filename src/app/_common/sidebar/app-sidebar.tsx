@@ -14,10 +14,10 @@ import {
   SquareTerminal,
 } from "lucide-react"
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/app/_common/sidebar/nav-main"
+import { NavProjects } from "@/app/_common/sidebar/nav-projects"
+import { NavUser } from "@/app/_common/sidebar/nav-user"
+import { TeamSwitcher } from "@/app/_common/sidebar/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -25,8 +25,9 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { ModeToggle } from "../theme/mode-toogle"
 
-import { ModeToggle } from '@/components/mode-toogle';
+
 
 
 // This is sample data.
