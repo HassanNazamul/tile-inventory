@@ -1,3 +1,4 @@
+
 import ListComponent from "./list";
 
 export default function WarehouseList() {
