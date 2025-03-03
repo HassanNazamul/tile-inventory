@@ -95,19 +95,19 @@ const data = {
           title: "Manage Warehouse",
           url: "/warehouse",
         }
-        ,
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
+        // ,
+        // {
+        //   title: "Get Started",
+        //   url: "#",
+        // },
+        // {
+        //   title: "Tutorials",
+        //   url: "#",
+        // },
+        // {
+        //   title: "Changelog",
+        //   url: "#",
+        // },
       ],
     },
     {
