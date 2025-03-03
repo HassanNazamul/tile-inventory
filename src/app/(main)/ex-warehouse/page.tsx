@@ -24,6 +24,38 @@ import {
     useReactTable,
 } from '@tanstack/react-table'
 
+
+
+import { Button } from "@/components/ui/button"
+
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer"
+
+
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+
+
+import { Skeleton } from "@/components/ui/skeleton"
+
 type Person = {
     firstName: string
     lastName: string
@@ -154,6 +186,72 @@ export default function Page() {
     return (
         <div className="flex flex-col gap-4 p-4 pt-0">
 
+            <div className="grid auto-rows-min gap-4 md:grid-cols-8">
+
+                <div className="rounded-xl bg-muted/50 p-2">
+                    <Drawer>
+                        <DrawerTrigger asChild>
+                            <Button>Open Drawer</Button>
+                        </DrawerTrigger>
+                        <DrawerContent>
+                            <DrawerHeader>
+                                <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+                                <DrawerDescription>This action cannot be undone.</DrawerDescription>
+                            </DrawerHeader>
+                            <DrawerFooter>
+                                <Button>Submit</Button>
+                                <DrawerClose>
+                                    <Button variant="outline">Cancel</Button>
+                                </DrawerClose>
+                            </DrawerFooter>
+                        </DrawerContent>
+                    </Drawer>
+                </div>
+
+                <div className="rounded-xl bg-muted/50 p-2">
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button>SHEET</Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>Edit profile</SheetTitle>
+                                <SheetDescription>
+                                    Make changes to your profile here. Click save when you're done.
+                                </SheetDescription>
+                            </SheetHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="name" className="text-right">
+                                        Name
+                                    </Label>
+                                    <Input id="name" value="Pedro Duarte" className="col-span-3" />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="username" className="text-right">
+                                        Username
+                                    </Label>
+                                    <Input id="username" value="@peduarte" className="col-span-3" />
+                                </div>
+                            </div>
+                            <SheetFooter>
+                                <SheetClose asChild>
+                                    <Button type="submit">Save changes</Button>
+                                </SheetClose>
+                            </SheetFooter>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+
+                <div className="rounded-xl bg-muted/50"></div>
+                <div className="rounded-xl bg-muted/50"></div>
+                <div className="rounded-xl bg-muted/50"></div>
+                <div className="rounded-xl bg-muted/50"></div>
+                <div className="rounded-xl bg-muted/50"></div>
+                <div className="rounded-xl bg-muted/50"></div>
+            </div>
+
+
             <div className="flex-1 rounded-xl bg-muted/50 p-2">
                 <Table className="gap-4">
 
@@ -220,7 +318,6 @@ export default function Page() {
                 <Table className="gap-4">
 
                     <TableCaption>A list of your recent invoices.</TableCaption>
-
                     <TableHeader className="hover:rounded-xl">
                         {table.getHeaderGroups().map(headerGroup => (
                             <TableRow key={headerGroup.id}>
@@ -244,7 +341,7 @@ export default function Page() {
                             <TableRow key={row.id}>
                                 {row.getVisibleCells().map(cell => (
                                     <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        <Skeleton className="h-10 " />
                                     </TableCell>
                                 ))}
                             </TableRow>

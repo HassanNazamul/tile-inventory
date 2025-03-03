@@ -30,7 +30,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-import { ModeToggle } from "@/components/mode-toogle";
+// import { ModeToggle } from "@/components/mode-toogle";
 
 export function NavUser({
   user,
@@ -86,7 +86,7 @@ export function NavUser({
               <DropdownMenuItem>
                 {/* <Sparkles /> */}
 
-                <ModeToggle /> Switch Theme
+                {/* <ModeToggle /> Switch Theme */}
 
               </DropdownMenuItem>
             </DropdownMenuGroup>

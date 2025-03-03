@@ -28,6 +28,7 @@ import {
 
 import { ModeToggle } from '@/components/mode-toogle';
 
+
 // This is sample data.
 const data = {
   user: {
@@ -36,28 +37,28 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
-    // {
-    //   name: "Acme Inc",
-    //   logo: GalleryVerticalEnd,
-    //   plan: "Enterprise",
-    // },
-    // {
-    //   name: "Acme Corp.",
-    //   logo: AudioWaveform,
-    //   plan: "Startup",
-    // },
-    // {
-    //   name: "Evil Corp.",
-    //   logo: Command,
-    //   plan: "Free",
-    // },
+    {
+      name: "Acme Inc",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
   ],
   navMain: [
     {
       title: "Playground",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: "History",
@@ -172,6 +173,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter>
+        <ModeToggle />
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
