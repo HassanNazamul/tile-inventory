@@ -4,6 +4,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar'
 import React from 'react'
 import { ModeToggle } from '@/app/_common/theme/mode-toogle'
 import Link from 'next/link'
+import AvatarDropDown from '@/components/comp-377'
 
 const BreadCrumb = () => {
     return (
@@ -25,8 +26,9 @@ const BreadCrumb = () => {
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>
-            <div className="ml-auto px-4">
+            <div className="ml-auto flex items-center gap-4 px-4">
                 <ModeToggle />
+                <AvatarDropDown />
             </div>
         </header>
     )
