@@ -1,7 +1,8 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton"
-
+import { Pagination } from "@/app/(main)/ex-warehouse/pagination"
 import {
   Table,
   TableBody,
@@ -19,114 +20,139 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-// import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 
-type Person = {
-  firstName: string
-  lastName: string
-  age: number
-  visits: number
-  status: string
-  progress: number
-}
 
-const defaultData: Person[] = [
-  {
-    firstName: 'tanner',
-    lastName: 'linsley',
-    age: 24,
-    visits: 100,
-    status: 'In Relationship',
-    progress: 50,
-  },
-  {
-    firstName: 'tandy',
-    lastName: 'miller',
-    age: 40,
-    visits: 40,
-    status: 'Single',
-    progress: 80,
-  },
-  {
-    firstName: 'joe',
-    lastName: 'dirte',
-    age: 45,
-    visits: 20,
-    status: 'Complicated',
-    progress: 10,
-  },
-]
+const columnHelper = createColumnHelper()
 
-const columnHelper = createColumnHelper<Person>()
 
-const columns = [
-  columnHelper.accessor('firstName', {
-    cell: info => info.getValue(),
-    header: () => <span>First Name</span>,
-    footer: info => info.column.id,
-  }),
-  columnHelper.accessor(row => row.lastName, {
-    id: 'lastName',
-    cell: info => <i>{info.getValue()}</i>,
-    header: () => <span>Last Name</span>,
-    footer: info => info.column.id,
-  }),
-  columnHelper.accessor('age', {
-    header: () => 'Age',
-    cell: info => info.renderValue(),
-    footer: info => info.column.id,
-  }),
-  columnHelper.accessor('visits', {
-    header: () => <span>Visits</span>,
-    footer: info => info.column.id,
-  }),
-  columnHelper.accessor('status', {
-    header: 'Status',
-    footer: info => info.column.id,
-  }),
-  columnHelper.accessor('progress', {
-    header: 'Profile Progress',
-    footer: info => info.column.id,
-  }),
-]
+
+// columnHelper.accessor(row => row.lastName, {
+//   id: 'lastName',
+//   cell: info => <i>{info.getValue()}</i>,
+//   header: () => <span>Last Name</span>,
+//   footer: info => info.column.id,
+// }),
+
+// columnHelper.accessor('age', {
+//   header: () => 'Age',
+//   cell: info => info.renderValue(),
+//   footer: info => info.column.id,
+// })
+
+// ]
 
 export default function CustomTable() {
-  // const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
 
-  const [data, _setData] = useState(() => [...defaultData])
-  // const rerender = React.useReducer(() => ({}), {})[1]
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [search, setSearch] = useState("");
+  const [sortField, setSortField] = useState("id");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Table Columns
+  const columns = [
+    columnHelper.accessor("id", {
+      cell: (info) => info.getValue(),
+      header: ({ column }) => (
+        <>
+          <span
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="cursor-pointer pr-2"
+          >
+            ID {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : "↑"}
+          </span>
+
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border p-1"
+          />
+        </>
+      ),
+      // footer: (info) => info.column.id,
+      // enableSorting: true, // Enable sorting
+    }),
+    columnHelper.accessor("name", {
+      cell: (info) => info.getValue(),
+      header: ({ column }) => (
+        <>
+          <span
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="cursor-pointer pr-2"
+          >
+            Name {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : "↑"}
+          </span>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border p-1"
+          />
+        </>
+      ),
+      // footer: (info) => info.column.id,
+      // enableSorting: true, // Enable sorting
+      // filterFn: "includes", // Enable search
+    }),
+    columnHelper.accessor("action", {
+      cell: (info) => (
+        <span>
+          <Button>Edit</Button> <Button variant="destructive">Delete</Button>
+        </span>
+      ),
+      header: () => <span>Action</span>,
+      // footer: (info) => "",
+      // enableSorting: false, // Disable sorting for action column
+    }),
+  ];
 
   const table = useReactTable({
     data,
     columns,
+    pageCount: totalPages, // Server-side total pages
     getCoreRowModel: getCoreRowModel(),
-  })
+    manualPagination: true, // Enable server-side pagination
+    manualSorting: true, // Enable server-side sorting
+    state: {
+      pagination: { pageIndex: page - 1, pageSize },
+      sorting: [{ id: sortField, desc: sortOrder === "desc" }],
+    },
+    onPaginationChange: (updater) => {
+      const newPagination =
+        typeof updater === "function" ? updater({ pageIndex: page - 1, pageSize }) : updater;
+      setPage(newPagination.pageIndex + 1);
+      setPageSize(newPagination.pageSize);
+    },
+    onSortingChange: (updater) => {
+      const newSorting =
+        typeof updater === "function"
+          ? updater([{ id: sortField, desc: sortOrder === "desc" }])
+          : updater;
+      setSortField(newSorting[0]?.id || "id");
+      setSortOrder(newSorting[0]?.desc ? "desc" : "asc");
+    },
+  });
 
-  // const fetchWarehouses = async () => {
-  //   const response = await fetch("/api/warehouse");
-  //   const data: Warehouse[] = await response.json();
-  //   setWarehouses(data);
-  // };
 
-  // const handleDelete = async (id: number) => {
-  //   const response = await fetch(`/api/warehouse`, {
-  //     method: "DELETE",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ id }),
-  //   });
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        `/api/warehouse?page=${page}&pageSize=${pageSize}&search=${search}&sortField=${sortField}&sortOrder=${sortOrder}`
+      );
+      const result = await response.json();
+      setData(result.data);
+      setTotalPages(result.totalPages);
+    };
 
-  //   if (response.ok) {
-  //     setWarehouses((prevWarehouses) =>
-  //       prevWarehouses.filter((warehouse) => warehouse.id !== id)
-  //     );
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchWarehouses();
-  // }, []);
-
-  // console.log(warehouses);
+    fetchData();
+  }, [page, pageSize, search, sortField, sortOrder]);
 
   return (
     <Table className="gap-4">
@@ -138,6 +164,23 @@ export default function CustomTable() {
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map(header => (
               <TableHead key={header.id} className="w-[7000px]">
+
+                {/* <span className='cursor-pointer p-2 border border-gray-300'
+                  onClick={() => {
+                    setSortField(header.column.id);
+                    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+                  }}
+                >
+                  🔼🔽
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="border p-2"
+                />
+                <br /> */}
                 {header.isPlaceholder
                   ? null
                   : flexRender(
@@ -163,7 +206,7 @@ export default function CustomTable() {
         ))}
       </TableBody>
 
-      <TableFooter>
+      {/* <TableFooter>
         {table.getFooterGroups().map(footerGroup => (
           <TableRow key={footerGroup.id}>
             {footerGroup.headers.map(header => (
@@ -178,8 +221,9 @@ export default function CustomTable() {
             ))}
           </TableRow>
         ))}
-      </TableFooter>
+      </TableFooter> */}
 
+      <Pagination page={page} setPage={setPage} totalPages={totalPages} />
     </Table>
   );
 }
