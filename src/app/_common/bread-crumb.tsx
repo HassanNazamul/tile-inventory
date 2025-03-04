@@ -3,6 +3,7 @@ import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import React from 'react'
 import { ModeToggle } from '@/app/_common/theme/mode-toogle'
+import Link from 'next/link'
 
 const BreadCrumb = () => {
     return (
@@ -13,8 +14,8 @@ const BreadCrumb = () => {
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem className="hidden md:block">
-                            <BreadcrumbLink href="#">
-                                Building Your Application
+                            <BreadcrumbLink asChild>
+                                <Link href="/">Dashboard</Link>
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="hidden md:block" />
