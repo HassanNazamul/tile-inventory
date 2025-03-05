@@ -1,8 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton"
-import { Pagination } from "@/app/(main)/ex-warehouse/pagination"
+import { PaginationComponent } from "@/app/(main)/ex-warehouse/pagination"
 import {
   Table,
   TableBody,
@@ -19,8 +18,12 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from '@tanstack/react-table'
+} from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { FilePenLine, Trash } from 'lucide-react';
 
 
 const columnHelper = createColumnHelper()
@@ -65,13 +68,11 @@ export default function CustomTable() {
             ID {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : "↑"}
           </span>
 
-          <input
-            type="text"
+          <Input type="text"
             placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border p-1"
-          />
+            className="border p-1" />
         </>
       ),
       // footer: (info) => info.column.id,
@@ -87,13 +88,11 @@ export default function CustomTable() {
           >
             Name {column.getIsSorted() === "asc" ? "↑" : column.getIsSorted() === "desc" ? "↓" : "↑"}
           </span>
-          <input
-            type="text"
+          <Input type="text"
             placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border p-1"
-          />
+            className="border p-1" />
         </>
       ),
       // footer: (info) => info.column.id,
@@ -102,8 +101,19 @@ export default function CustomTable() {
     }),
     columnHelper.accessor("action", {
       cell: (info) => (
-        <span>
-          <Button>Edit</Button> <Button variant="destructive">Delete</Button>
+        <span className='flex gap-2'>
+
+          <Button variant="outline">
+            <FilePenLine className='text-yellow-500' />
+          </Button>
+
+          <Button variant="outline">
+            <Trash className='text-red-600'/>
+          </Button>
+
+
+
+
         </span>
       ),
       header: () => <span>Action</span>,
@@ -155,58 +165,42 @@ export default function CustomTable() {
   }, [page, pageSize, search, sortField, sortOrder]);
 
   return (
-    <Table className="gap-4">
+    <>
+      <Table className="gap-4 text-sm">
 
-      <TableCaption>A list of your recent invoices.</TableCaption>
+        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
 
-      <TableHeader className="hover:rounded-xl">
-        {table.getHeaderGroups().map(headerGroup => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map(header => (
-              <TableHead key={header.id} className="w-[7000px]">
+        <TableHeader className="hover:rounded-xl">
+          {table.getHeaderGroups().map(headerGroup => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
 
-                {/* <span className='cursor-pointer p-2 border border-gray-300'
-                  onClick={() => {
-                    setSortField(header.column.id);
-                    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-                  }}
-                >
-                  🔼🔽
-                </span>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="border p-2"
-                />
-                <br /> */}
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-              </TableHead>
-            ))}
-          </TableRow>
-        ))}
-      </TableHeader>
+        <TableBody>
 
-      <TableBody>
+          {table.getRowModel().rows.map(row => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map(cell => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
 
-        {table.getRowModel().rows.map(row => (
-          <TableRow key={row.id}>
-            {row.getVisibleCells().map(cell => (
-              <TableCell key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-
-      {/* <TableFooter>
+        {/* <TableFooter>
         {table.getFooterGroups().map(footerGroup => (
           <TableRow key={footerGroup.id}>
             {footerGroup.headers.map(header => (
@@ -223,7 +217,9 @@ export default function CustomTable() {
         ))}
       </TableFooter> */}
 
-      <Pagination page={page} setPage={setPage} totalPages={totalPages} />
-    </Table>
+      </Table>
+      <Separator className="my-4" />
+      <PaginationComponent page={page} setPage={setPage} totalPages={totalPages} />
+    </>
   );
 }

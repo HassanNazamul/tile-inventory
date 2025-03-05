@@ -1,90 +1,98 @@
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 
-export function Pagination({ page, setPage, totalPages }) {
-    const pageNumbers = [];
+interface PaginationProps {
+    page: number;
+    setPage: React.Dispatch<React.SetStateAction<number>>;
+    totalPages: number;
+}
 
-    if (totalPages <= 7) {
-        // If total pages are less than or equal to 7, show all pages
-        for (let i = 1; i <= totalPages; i++) {
-            pageNumbers.push(i);
-        }
-    } else {
-        // Always show first 3 pages
-        pageNumbers.push(1, 2, 3);
+export function PaginationComponent({ page, setPage, totalPages }: PaginationProps) {
+    const pageNumbers: (number | string)[] = [];
 
-        // Add "..." if current page is not close to the start
-        if (page > 5) pageNumbers.push("...");
+    // Always show first page
+    pageNumbers.push(1);
 
-        // Add current page and neighbors
-        if (page > 3 && page < totalPages - 2) {
-            pageNumbers.push(page - 1, page, page + 1);
-        }
+    // Show "..." if there's a gap between first page and current page -1
+    if (page > 3) {
+        pageNumbers.push("...");
+    }
 
-        // Add "..." before the last 3 pages if necessary
-        if (page < totalPages - 4) pageNumbers.push("...");
+    // Show current page -1, current page, and current page +1 (if within range)
+    for (let i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) {
+        if (!pageNumbers.includes(i)) pageNumbers.push(i);
+    }
 
-        // Always show last 3 pages
-        pageNumbers.push(totalPages - 2, totalPages - 1, totalPages);
+    // Show "..." if there's a gap before the last page
+    if (page < totalPages - 2) {
+        pageNumbers.push("...");
+    }
+
+    // Always show last page
+    if (totalPages > 1) {
+        pageNumbers.push(totalPages);
     }
 
     return (
-        <div className="flex items-center justify-between mt-4">
-            <div className="flex space-x-2">
-                <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={page === 1}
-                    onClick={() => setPage(1)}
-                >
-                    <ChevronsLeft className="w-5 h-5" />
-                </Button>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={page === 1}
-                    onClick={() => setPage(page - 1)}
-                >
-                    <ChevronLeft className="w-5 h-5" />
-                </Button>
+        <Pagination className="justify-start">
+            <PaginationContent>
+                <PaginationItem>
+                    <PaginationPrevious
+                        href="#"
+                        onClick={(e: any) => {
+                            e.preventDefault();
+                            setPage((prev) => Math.max(1, prev - 1));
+                        }
+                        }
+                        disabled={page === 1}
+                    />
+                </PaginationItem>
 
                 {pageNumbers.map((num, index) =>
                     num === "..." ? (
-                        <span key={index} className="px-2 text-gray-500">
-                            ...
-                        </span>
+                        <PaginationItem key={index}>
+                            <PaginationEllipsis />
+                        </PaginationItem>
                     ) : (
-                        <Button
-                            key={index}
-                            variant={page === num ? "default" : "outline"}
-                            size="icon"
-                            onClick={() => setPage(num)}
-                        >
-                            {num}
-                        </Button>
+                        <PaginationItem key={index}>
+                            <PaginationLink
+                                href="#"
+                                isActive={page === num}
+                                onClick={(e: any) => {
+                                    e.preventDefault();
+                                    setPage(num as number);
+                                    }
+                                }
+                            >
+                                {num}
+                            </PaginationLink>
+                        </PaginationItem>
                     )
                 )}
 
-                <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={page === totalPages}
-                    onClick={() => setPage(page + 1)}
-                >
-                    <ChevronRight className="w-5 h-5" />
-                </Button>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    disabled={page === totalPages}
-                    onClick={() => setPage(totalPages)}
-                >
-                    <ChevronsRight className="w-5 h-5" />
-                </Button>
-            </div>
-            <span className="text-sm text-gray-600">
-                Page {page} of {totalPages}
-            </span>
-        </div>
+                <PaginationItem>
+                    <PaginationNext
+                        href="#"
+                        onClick={(e: any) => {
+                            e.preventDefault();
+                            setPage((prev) => Math.min(totalPages, prev + 1));
+                            }
+                        }
+                        disabled={page === totalPages}
+                    />
+                </PaginationItem>
+
+                <span className="text-sm text-gray-600">
+                    Page {page} of {totalPages}
+                </span>
+            </PaginationContent>
+        </Pagination>
     );
 }
