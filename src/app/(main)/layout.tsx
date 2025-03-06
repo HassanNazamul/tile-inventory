@@ -10,6 +10,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "@/app/globals.css";
 import { ThemeProvider } from "../_common/theme/theme-provider";
 // import Header from "../_common/header";
+import { Toaster } from "@/components/ui/sonner"
 
 
 
@@ -60,8 +61,7 @@ export default function RootLayout({
 
 
         </ThemeProvider>
-
-
+        <Toaster />
       </body>
     </html>
   );

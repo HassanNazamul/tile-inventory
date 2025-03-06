@@ -39,10 +39,15 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+
     const data = await req.json();
-    console.log(data);
-    await warehouseRepo.create({ name: data.name, location: data.location });
-    return NextResponse.json({ message: "Warehouse added" });
+
+    try {
+        await warehouseRepo.create({ name: data.name, location: data.location });
+        return NextResponse.json({ success: true, message: "Warehouse added" });
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
 }
 
 export async function DELETE(req) {

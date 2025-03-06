@@ -214,27 +214,28 @@ body {
 
 /* 
 
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* table scrollable style start */
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
 
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  /* Light gray (ShadCN style) */
+  border-radius: 10px;
+}
 
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  /* Neutral gray */
+  border-radius: 10px;
+}
 
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #303030;
+  /* Slightly darker on hover */
+}
 
-
-
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-} */
+/* table scrollable style ends */

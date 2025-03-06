@@ -20,7 +20,7 @@ export function PaginationComponent({ page, setPage, totalPages }: PaginationPro
     // Always show first page
     pageNumbers.push(1);
 
-    // Show "..." if there's a gap between first page and current page -1
+    // Show "..." if there's a gap before current page -1
     if (page > 3) {
         pageNumbers.push("...");
     }
@@ -41,23 +41,24 @@ export function PaginationComponent({ page, setPage, totalPages }: PaginationPro
     }
 
     return (
-        <Pagination className="justify-start">
-            <PaginationContent>
+        <Pagination className="justify-start w-full">
+            <PaginationContent className="flex flex-wrap gap-1">
+                {/* Previous Button */}
                 <PaginationItem>
                     <PaginationPrevious
                         href="#"
-                        onClick={(e: any) => {
+                        onClick={(e) => {
                             e.preventDefault();
                             setPage((prev) => Math.max(1, prev - 1));
-                        }
-                        }
+                        }}
                         disabled={page === 1}
                     />
                 </PaginationItem>
 
+                {/* Page Numbers */}
                 {pageNumbers.map((num, index) =>
                     num === "..." ? (
-                        <PaginationItem key={index}>
+                        <PaginationItem key={index} className="hidden sm:flex">
                             <PaginationEllipsis />
                         </PaginationItem>
                     ) : (
@@ -65,11 +66,11 @@ export function PaginationComponent({ page, setPage, totalPages }: PaginationPro
                             <PaginationLink
                                 href="#"
                                 isActive={page === num}
-                                onClick={(e: any) => {
+                                onClick={(e) => {
                                     e.preventDefault();
                                     setPage(num as number);
-                                    }
-                                }
+                                }}
+                                className="px-2 sm:px-3 md:px-4 py-1 text-sm"
                             >
                                 {num}
                             </PaginationLink>
@@ -77,20 +78,21 @@ export function PaginationComponent({ page, setPage, totalPages }: PaginationPro
                     )
                 )}
 
+                {/* Next Button */}
                 <PaginationItem>
                     <PaginationNext
                         href="#"
-                        onClick={(e: any) => {
+                        onClick={(e) => {
                             e.preventDefault();
                             setPage((prev) => Math.min(totalPages, prev + 1));
-                            }
-                        }
+                        }}
                         disabled={page === totalPages}
                     />
                 </PaginationItem>
 
-                <span className="text-sm text-gray-600">
-                    Page {page} of {totalPages}
+                {/* Page Indicator (Only on Mobile) */}
+                <span className="text-sm text-gray-600 block">
+                    {page} / {totalPages}
                 </span>
             </PaginationContent>
         </Pagination>
