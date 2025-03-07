@@ -1,3 +1,6 @@
+'use client';
+
+import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -8,8 +11,55 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import axios from "axios"
+import { useRouter } from "next/navigation"
+
+interface DataInterface {
+  email: string,
+  password: string
+}
 
 export default function LoginForm() {
+
+  const router = useRouter();
+
+  const [data, setData] = useState<DataInterface>({
+    email: "",
+    password: ""
+  });
+
+  const handleChange = (e: any) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value
+    });
+  }
+
+  // const handleCheckboxChange = (e: any) => {
+  //   setData({
+  //     ...data,
+  //     [e.target.name]: e.target.checked
+  //   });
+  // }
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    let post;
+    try {
+      post = await axios.post("/api/login", data);
+    } catch (err) {
+
+    }
+
+    console.log('Status:', data);
+    if (post?.status === 200) {
+      router.push("/ex-warehouse");
+    }
+  }
+
+  console.log('Data:', data);
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
@@ -22,13 +72,16 @@ export default function LoginForm() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
                       type="email"
+                      name="email"
+                      value={data.email}
+                      onChange={handleChange}
                       placeholder="m@example.com"
                       required
                     />
@@ -43,7 +96,14 @@ export default function LoginForm() {
                         Forgot your password?
                       </a>
                     </div>
-                    <Input id="password" type="password" required />
+                    <Input
+                      id="password"
+                      type="password"
+                      name="password"
+                      placeholder="Enter your password"
+                      value={data.password}
+                      onChange={handleChange}
+                      required />
                   </div>
                   <Button type="submit" className="w-full">
                     Login
