@@ -54,7 +54,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated }: Custo
                 method,
                 url,
                 headers: { "Content-Type": "application/json" },
-                data: formData, // Body data
+                data: formData,
             });
 
             if (response) {
