@@ -1,8 +1,9 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { Skeleton } from "@/components/ui/skeleton"
-import { MoveUp, MoveDown } from 'lucide-react';
-import { PaginationComponent } from "@/app/(main)/ex-warehouse/pagination"
+import { ArrowUpNarrowWide, ArrowDownNarrowWide } from 'lucide-react';
+import { PaginationComponent } from "@/app/_common/customtable/pagination"
+import LimitSelect from '@/app/_common/customtable/limitSelect';
 import axios from 'axios'
 import {
   Table,
@@ -14,16 +15,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
-import LimitSelect from '@/app/(main)/ex-warehouse/limitSelect';
 
 interface CustomTableProps {
   tableDesc: string,
@@ -42,11 +40,16 @@ export default function CustomTable({ tableDesc, url, columns, istableUpdated }:
   const [columnOrders, setcolumnOrders] = useState({ "id": "desc" });
   const [totalPages, setTotalPages] = useState(1);
 
+  const [timeOutId, setTimeOutId] = useState();
+  let [upadteFilterTable, setUpadteFilterTable] = useState(0);
+
   const table = useReactTable({
     data,
     columns,
     pageCount: totalPages,
     getCoreRowModel: getCoreRowModel(),
+    // columnResizeMode: "onChange", // Updates size while dragging
+    // enableColumnResizing: true, // Enable resizing globally
   });
 
 
@@ -73,11 +76,18 @@ export default function CustomTable({ tableDesc, url, columns, istableUpdated }:
 
     setIsLoading(true);
     fetchData();
-  }, [page, limit, columnFilters, columnOrders, istableUpdated]);
+    clearTimeout(timeOutId);
+  }, [page, limit, columnOrders, upadteFilterTable, istableUpdated]);
 
   //column filter logic
   const handleColumnFilterChange = (columnId: String) => (e: any) => {
     setcolumnFilters({ ...columnFilters, [columnId]: e.target.value });
+
+    let id = setTimeout(() => {
+      console.log("naz table is launched");
+      setUpadteFilterTable(++upadteFilterTable);
+    }, 2000);
+    setTimeOutId(id);
   }
 
   const handleColumnOrderChange = (columnId: String) => {
@@ -86,74 +96,84 @@ export default function CustomTable({ tableDesc, url, columns, istableUpdated }:
 
   return (
     <>
-      <Table className="gap-4 text-sm">
-        <TableCaption>{tableDesc}</TableCaption>
-        <TableHeader className="hover:rounded-xl">
+      <Table className="table-fixed w-full">
+        <TableHeader className="hover:rounded-xl ">
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map(header => (
-                <TableHead key={header.id} className="py-1 text-sm">
+                <TableHead key={header.id} className="py-1 text-sm pl-[5px]" style={{ width: `${header.getSize()}px` }}>
 
                   <span className='flex justify-left'>
-                    {(header.id === "action") ?
-                      ""
-                      :
-                      <span
-                        onClick={() => { handleColumnOrderChange(header.id) }}
-                        className="cursor-pointer pr-2">
-                        {(columnOrders[header.id] ?? "asc") === "desc" ? <MoveDown className='p-2' /> : <MoveUp className='p-2' />}
-                      </span>
-                    }
-
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
+                    {(header.id === "action") ?
+                      ""
+                      :
+                      <span
+                        onClick={() => { handleColumnOrderChange(header.id) }}
+                        className="cursor-pointer pr-2">
+                        {(columnOrders[header.id] ?? "asc") === "desc" ? <ArrowDownNarrowWide className='pb-2 pl-2' /> : <ArrowUpNarrowWide className='pb-2 pl-2' />}
+                      </span>
+                    }
                   </span>
 
-                  {(header.id === "action") ?
-                    <div className='pt-8'></div>
-                    :
-                    <Input type="text"
-                      placeholder={" Search " + header.id}
-                      value={columnFilters[header.id] || ""}
-                      onChange={handleColumnFilterChange(header.id)}
-                      className="border p-1 h-[35px]" />
-                  }
+                  <Input type="text"
+                    placeholder={(header.id === "action") ? "Disabled" : " Search " + header.id}
+                    value={columnFilters[header.id] || ""}
+                    onChange={handleColumnFilterChange(header.id)}
+                    disabled={(header.id === "action") ? true : false}
+                    className={"border p-1 h-[30px] w-full"} />
                 </TableHead>
               ))}
             </TableRow>
           ))}
         </TableHeader>
+      </Table>
+      <section className='overflow-y-auto h-[420px] custom-scrollbar'>
+        <Table className="table-fixed w-full ">
+          <TableCaption>{tableDesc}</TableCaption>
+          <TableHeader className="hover:rounded-xl ">
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <TableHead key={header.id} className='h-[1px]' style={{ width: `${header.getSize()}px` }}>
 
-        <TableBody>
-          {isLoading
-            ? // Show skeleton loaders when data is loading
-            Array.from({ length: limit }).map((_, index) => (
-              <TableRow key={index} className="h-8">
-                {table.getAllColumns().map((column) => (
-                  <TableCell key={column.id} className="py-1 text-sm">
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-            : // Show actual data when loaded
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} className="h-8">
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="py-1 text-sm">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+                  </TableHead>
                 ))}
               </TableRow>
             ))}
-        </TableBody>
+          </TableHeader>
+
+          <TableBody>
+            {isLoading
+              ? // Show skeleton loaders when data is loading
+              Array.from({ length: limit }).map((_, index) => (
+                <TableRow key={index} className="h-8">
+                  {table.getAllColumns().map((column) => (
+                    <TableCell key={column.id} className="py-1 text-sm">
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+              : // Show actual data when loaded
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} className="h-8">
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-1 text-sm">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+          </TableBody>
 
 
-        {/* <TableFooter>
+          {/* <TableFooter>
         {table.getFooterGroups().map(footerGroup => (
           <TableRow key={footerGroup.id}>
             {footerGroup.headers.map(header => (
@@ -170,7 +190,9 @@ export default function CustomTable({ tableDesc, url, columns, istableUpdated }:
         ))}
       </TableFooter> */}
 
-      </Table>
+        </Table>
+      </section>
+
       <Separator className="my-4" />
 
       <div className="flex justify-between items-center gap-4">

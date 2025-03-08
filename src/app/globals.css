@@ -222,19 +222,19 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: #292929;
   /* Light gray (ShadCN style) */
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #cecece;
   /* Neutral gray */
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #303030;
+  background: #1e1e1e;
   /* Slightly darker on hover */
 }
 
