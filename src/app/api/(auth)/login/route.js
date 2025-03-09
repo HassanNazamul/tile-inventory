@@ -9,7 +9,7 @@ import { users } from '@db/schema';
 import { db } from '@db/db';
 
 // Define the secret key
-const secret = new TextEncoder().encode('nazjwttest');
+const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
 
 // Define a schema using Zod
 const userSchema = z.object({
@@ -39,8 +39,6 @@ export async function POST(req) {
 
         // fetch email, password
         const fetchUserDetails = await db.execute(`SELECT email, password  FROM users WHERE email = '${email}' LIMIT 1`);
-
-        console.log("user--------->",fetchUserDetails);
 
         // user not found
         if (fetchUserDetails[0].length == 0) {

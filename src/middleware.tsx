@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
 // Define the secret key
-const secret = new TextEncoder().encode('nazjwttest');
+const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
 
 export async function middleware(request: NextRequest) {
     const token = request.cookies.get('authToken')?.value ?? '';
