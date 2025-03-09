@@ -28,7 +28,7 @@ import {
 import { toast } from "sonner";
 
 interface CustomSheetProps {
-    istableUpdated,
+    istableUpdated: number,
     setIstableUpdated: (value: number) => void;
 }
 
@@ -143,7 +143,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated }: Custo
                                 </Button>
                             </SheetClose>
 
-                            <Button type="submit" variant={formData.id === 0 ? "primary" : "info"}>
+                            <Button type="submit" variant={formData.id === 0 ? "secondary" : "outline"}>
                                 {formData.id === 0 ? "Add Warehouse" : "Update Warehouse"}
                             </Button>
                         </CardFooter>

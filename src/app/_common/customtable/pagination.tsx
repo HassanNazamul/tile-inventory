@@ -3,10 +3,13 @@ import {
     PaginationContent,
     PaginationEllipsis,
     PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
+    // PaginationLink,
+    // PaginationNext,
+    // PaginationPrevious,
 } from "@/components/ui/pagination";
+
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
     page: number;
@@ -45,14 +48,14 @@ export function PaginationComponent({ page, setPage, totalPages }: PaginationPro
             <PaginationContent className="flex flex-wrap gap-1">
                 {/* Previous Button */}
                 <PaginationItem>
-                    <PaginationPrevious
-                        href="#"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setPage((prev) => Math.max(1, prev - 1));
-                        }}
+                    <Button
+                        variant="ghost"
                         disabled={page === 1}
-                    />
+                        onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                        Previous
+                    </Button>
                 </PaginationItem>
 
                 {/* Page Numbers */}
@@ -63,31 +66,27 @@ export function PaginationComponent({ page, setPage, totalPages }: PaginationPro
                         </PaginationItem>
                     ) : (
                         <PaginationItem key={index}>
-                            <PaginationLink
-                                href="#"
-                                isActive={page === num}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setPage(num as number);
-                                }}
+                            <Button
+                                variant={page === num ? "default" : "outline"}
+                                onClick={() => setPage(num as number)}
                                 className="px-2 sm:px-3 md:px-4 py-1 text-sm"
                             >
                                 {num}
-                            </PaginationLink>
+                            </Button>
                         </PaginationItem>
                     )
                 )}
 
                 {/* Next Button */}
                 <PaginationItem>
-                    <PaginationNext
-                        href="#"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setPage((prev) => Math.min(totalPages, prev + 1));
-                        }}
+                    <Button
+                        variant="ghost"
                         disabled={page === totalPages}
-                    />
+                        onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+                    >
+                        Next
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
                 </PaginationItem>
 
                 {/* Page Indicator (Only on Mobile) */}
