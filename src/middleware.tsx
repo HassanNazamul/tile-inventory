@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get('authToken')?.value ?? '';
 
     // Define public pages
-    const publicPages = ['/login', '/singup', '/'];
+    const publicPages = ['/api/login', '/api/singup','/login', '/singup', '/'];
     const isPublicPage = publicPages.includes(request.nextUrl.pathname);
 
     let isVerified: boolean | object = false;
@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
 
     // Redirect authenticated users from /login or public pages
     if (isPublicPage && token && isVerified) {
-        const previousUrl = request.headers.get('referer') || '/ex-warehouse';
+        const previousUrl = request.headers.get('referer') || '/warehouse';
         return NextResponse.redirect(new URL(previousUrl, request.url));
     }
 
@@ -39,5 +39,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|assets/|public/).*)'], // Match all routes except excluded paths
+    matcher: ['/((?!_next/static|_next/image|favicon.ico|assets/|public/).*)'], // Match all routes except excluded paths
 };
