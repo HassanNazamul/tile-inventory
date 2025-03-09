@@ -54,7 +54,7 @@ export default function LoginForm() {
 
     console.log('Status:', data);
     if (post?.status === 200) {
-      router.push("/ex-warehouse");
+      router.push("/warehouse");
     }
   }
 
