@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import CustomDrawer from "@/app/(main)/ex-warehouse/drawer"
 import CustomSheet from "@/app/(main)/ex-warehouse/sheet"
-import CustomTable from "@/app/(main)/ex-warehouse/table"
+import CustomTable from "@/app/_common/customtable/table"
 import { FilePenLine, Trash } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { toast } from "sonner"
@@ -18,17 +18,23 @@ const columns = [
     columnHelper.accessor("id", {
         header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
         cell: (info) => info.getValue(),
+        size: 20,
+        enableResizing: true, // Allow resizing
     }),
     columnHelper.accessor("name", {
         cell: (info) => info.getValue(),
-        header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1)
+        header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
+        size: 100
+
         // footer: (info) => info.column.id,
         // enableSorting: true, // Enable sorting
         // filterFn: "includes", // Enable search
     }),
     columnHelper.accessor("location", {
         cell: (info) => info.getValue(),
-        header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1)
+        header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+        size: 100
+
         // footer: (info) => info.column.id,
         // enableSorting: true, // Enable sorting
         // filterFn: "includes", // Enable search
@@ -65,6 +71,8 @@ const columns = [
 
             </span>
         ),
+        size: 20
+
         // footer: (info) => "",
         // enableSorting: false, // Disable sorting for action column
     }),
