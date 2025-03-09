@@ -35,7 +35,15 @@ export default function LoginForm() {
   //state for email and pssword
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    emailValid: boolean;
+    passwordValid: boolean;
+  }>({
+    emailValid: false,
+    passwordValid: false,
+  });
 
   //state for form data combined both email and password used to send request to server
   const [data, setData] = useState<FormDataInterface>({ email: "", password: "" })
@@ -61,6 +69,7 @@ export default function LoginForm() {
       setErrors((prevErrors) => ({
         ...prevErrors,
         email: formattedErrors._errors[0],
+        emailValid: false,
       }));
 
       setIsFormValid(false);
@@ -78,7 +87,8 @@ export default function LoginForm() {
 
       setErrors((prevErrors) => ({
         ...prevErrors,
-        email: undefined,
+        email: "perfect",
+        emailValid: true
       }));
     }
   };
@@ -96,6 +106,7 @@ export default function LoginForm() {
       setErrors((prevErrors) => ({
         ...prevErrors,
         password: formattedErrors._errors[0],
+        passwordValid: false
       }));
 
       setIsFormValid(false)
@@ -112,7 +123,8 @@ export default function LoginForm() {
 
       setErrors((prevErrors) => ({
         ...prevErrors,
-        password: undefined,
+        password: "lawda",
+        passwordValid: true
       }));
     }
   };
@@ -172,7 +184,9 @@ export default function LoginForm() {
                       onChange={handleEmailChange}
                       placeholder="m@example.com"
                     />
-                    {errors.email && <ErrorMessage message={errors.email} />}
+                    <div className="h-4">
+                      {errors.email && <ErrorMessage message={errors.email} valid={errors.emailValid} />}
+                    </div>
                   </div>
 
                   {/* Password Input */}
@@ -194,7 +208,9 @@ export default function LoginForm() {
                       value={passwordInput}
                       onChange={handlePasswordChange}
                     />
-                    {errors.password && <ErrorMessage message={errors.password} />}
+                    <div className="h-4">
+                      {errors.password && <ErrorMessage message={errors.password} valid={errors.passwordValid} />}
+                    </div>
                   </div>
                   <Button type="submit" className="w-full" disabled={!isFormValid}>
                     Login
