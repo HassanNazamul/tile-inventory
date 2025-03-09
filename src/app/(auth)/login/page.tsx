@@ -1,64 +1,143 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import axios from "axios"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
+import ErrorMessage from "../error-message";
 
-interface DataInterface {
+// to send requesto to server
+interface FormDataInterface {
   email: string,
   password: string
 }
 
-export default function LoginForm() {
+// Define Zod validation schema
+const schema = z.object({
+  email: z.string().email({ message: "Enter a valid email" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
 
+export default function LoginForm() {
   const router = useRouter();
 
-  const [data, setData] = useState<DataInterface>({
-    email: "",
-    password: ""
-  });
+  //state for email and pssword
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
-  const handleChange = (e: any) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value
-    });
-  }
+  const [data, setData] = useState<FormDataInterface>({ email: "", password: "" })
 
-  // const handleCheckboxChange = (e: any) => {
-  //   setData({
-  //     ...data,
-  //     [e.target.name]: e.target.checked
-  //   });
-  // }
+  const [isFormValid, setIsFormValid] = useState(true);
 
-  const handleSubmit = async (e: any) => {
+
+
+
+  //state handler for email
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailInput(e.target.value);
+
+    // Validate the email field
+    const result = schema.shape.email.safeParse(e.target.value);
+
+    if (!result.success) {
+      // Handle validation errors
+      const formattedErrors = result.error.format();
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: formattedErrors._errors[0],
+      }));
+
+      setIsFormValid(false);
+
+    }
+    else {
+
+      setIsFormValid(true);
+
+      // Update the email in the data state
+      setData((prevData) => ({
+        ...prevData,
+        email: e.target.value,
+      }));
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: undefined,
+      }));
+    }
+  };
+
+  // State handler for password
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordInput(e.target.value);
+
+    // Validate the password field
+    const result = schema.shape.password.safeParse(e.target.value);
+
+    if (!result.success) {
+      // Handle validation errors
+      const formattedErrors = result.error.format();
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: formattedErrors._errors[0],
+      }));
+
+      setIsFormValid(false)
+
+    } else {
+
+      setIsFormValid(true)
+
+      // Update the password in the data state
+      setData((prevData) => ({
+        ...prevData,
+        password: e.target.value,
+      }));
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: undefined,
+      }));
+    }
+  };
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let post;
     try {
       post = await axios.post("/api/login", data);
-    } catch (err) {
+    }
+    catch (err) {
+
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "Lawda Password",
+      }));
 
     }
 
-    console.log('Status:', data);
+
+
+    // console.log('Status:', data);
     if (post?.status === 200) {
       router.push("/ex-warehouse");
     }
   }
-
-  console.log('Data:', data);
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
@@ -74,55 +153,65 @@ export default function LoginForm() {
             <CardContent>
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
+
+                  {/* Email */}
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
-                      type="email"
+                      type="text"
                       name="email"
-                      value={data.email}
-                      onChange={handleChange}
+                      value={emailInput}
+                      onChange={handleEmailChange}
                       placeholder="m@example.com"
-                      required
                     />
+                    {errors.email && <p className="text-red-500">{errors.email}</p>}
                   </div>
+
+                  {/* Password Input */}
                   <div className="grid gap-2">
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
-                      <a
+                      {/* <a
                         href="#"
                         className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                       >
                         Forgot your password?
-                      </a>
+                      </a> */}
                     </div>
                     <Input
                       id="password"
                       type="password"
                       name="password"
                       placeholder="Enter your password"
-                      value={data.password}
-                      onChange={handleChange}
-                      required />
+                      value={passwordInput}
+                      onChange={handlePasswordChange}
+                    />
+                    {errors.password && <ErrorMessage message={errors.password} />}
                   </div>
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full" disabled={!isFormValid}>
                     Login
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  {/* <Button variant="outline" className="w-full">
                     Login with Google
-                  </Button>
+                  </Button> */}
                 </div>
-                <div className="mt-4 text-center text-sm">
+
+                {/* Signup */}
+                {/* <div className="mt-4 text-center text-sm">
                   Don&apos;t have an account?{" "}
                   <a href="#" className="underline underline-offset-4">
                     Sign up
                   </a>
-                </div>
+                </div> */}
               </form>
             </CardContent>
           </Card>
         </div>
       </div>
-    </div>
-  )
+    </div >
+  );
+
+
+
 }
