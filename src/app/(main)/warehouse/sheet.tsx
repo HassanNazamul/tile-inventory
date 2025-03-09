@@ -29,15 +29,16 @@ import { toast } from "sonner";
 
 interface CustomSheetProps {
     istableUpdated: number,
-    setIstableUpdated: (value: number) => void;
+    setIstableUpdated: (value: number) => void,
+    selectedIdData: object | null,
+    isOpen: boolean,
+    onClose: () => void
 }
 
-export default function CustomSheet({ istableUpdated, setIstableUpdated }: CustomSheetProps) {
-    const [formData, setFormData] = useState({
-        id: 0,
-        name: "",
-        location: "",
-    });
+export default function CustomSheet({ istableUpdated, setIstableUpdated, selectedIdData, isOpen, onClose }: CustomSheetProps) {
+    console.log("CustomSheet -> selectedIdData", selectedIdData)
+    
+    const [formData, setFormData] = useState({...selectedIdData});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -81,12 +82,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated }: Custo
     };
 
     return (
-        <Sheet>
-            {/* Button to Open Sheet */}
-            <SheetTrigger asChild>
-                <Button variant="outline">{formData.id === 0 ? "Add Warehouse" : "Edit Warehouse"}</Button>
-            </SheetTrigger>
-
+        <Sheet open={isOpen} onOpenChange={onClose}>
             {/* Sheet Content */}
             <SheetContent side="right">
                 <SheetHeader>
