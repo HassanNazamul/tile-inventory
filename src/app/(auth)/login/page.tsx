@@ -37,8 +37,10 @@ export default function LoginForm() {
   const [passwordInput, setPasswordInput] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
+  //state for form data combined both email and password used to send request to server
   const [data, setData] = useState<FormDataInterface>({ email: "", password: "" })
 
+  //to make login button disabled, stopping unnessary request.
   const [isFormValid, setIsFormValid] = useState(true);
 
 
@@ -51,6 +53,8 @@ export default function LoginForm() {
     // Validate the email field
     const result = schema.shape.email.safeParse(e.target.value);
 
+    //if wrong format the error will be filled in email and make login btn disable
+    //else enanle loginbtn and fill formData object with data and remove error
     if (!result.success) {
       // Handle validation errors
       const formattedErrors = result.error.format();
@@ -122,11 +126,14 @@ export default function LoginForm() {
       post = await axios.post("/api/login", data);
     }
     catch (err) {
-
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "invalid credentials",
+      }));
 
       setErrors((prevErrors) => ({
         ...prevErrors,
-        password: "Lawda Password",
+        email: "invalid credentials",
       }));
 
     }
@@ -165,7 +172,7 @@ export default function LoginForm() {
                       onChange={handleEmailChange}
                       placeholder="m@example.com"
                     />
-                    {errors.email && <p className="text-red-500">{errors.email}</p>}
+                    {errors.email && <ErrorMessage message={errors.email} />}
                   </div>
 
                   {/* Password Input */}

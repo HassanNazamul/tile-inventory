@@ -7,7 +7,7 @@ interface ErrorMessageProps {
 const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   return (
     <motion.p
-      className="text-red-500"
+      className="text-red-500 text-xs"
       initial={{ opacity: 0, y: 20 }}  // Start off-screen and invisible
       animate={{ opacity: 1, y: 0 }}   // Fade in and slide into place
       exit={{ opacity: 0, y: 20 }}     // Fade out and slide out when removed
