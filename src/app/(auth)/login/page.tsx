@@ -87,7 +87,7 @@ export default function LoginForm() {
 
       setErrors((prevErrors) => ({
         ...prevErrors,
-        email: "perfect",
+        email: " ",
         emailValid: true
       }));
     }
@@ -123,7 +123,7 @@ export default function LoginForm() {
 
       setErrors((prevErrors) => ({
         ...prevErrors,
-        password: "lawda",
+        password: " ",
         passwordValid: true
       }));
     }

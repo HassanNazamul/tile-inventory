@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import React, { useState } from 'react';
@@ -8,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import { z } from 'zod';
 
 interface DataInterface {
     name: string;
@@ -15,6 +17,14 @@ interface DataInterface {
     password: string;
     acceptTerms: boolean;
 }
+
+// Define Zod validation schema
+const schema = z.object({
+    name: z.string().nonempty({message : "Name is required"}),
+    email: z.string().email({ message: "Enter a valid email" }),
+    password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  });
+  
 
 export default function SignUp() {
     const router = useRouter();
@@ -25,6 +35,11 @@ export default function SignUp() {
         acceptTerms: false,
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [acceptTerms, setAcceptTerms] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
