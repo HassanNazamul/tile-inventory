@@ -65,7 +65,7 @@ export default function Page() {
                             });
 
                             // set the row data to the state
-                            setSelectedIdData({
+                            setSelectedIdData( {
                                 id: info.row.original.id,
                                 name: info.row.original.name,
                                 location: info.row.original.location,
@@ -163,6 +163,7 @@ export default function Page() {
                 selectedIdData={selectedIdData} // Pass the selected ID
                 isOpen={isSheetOpen} // Control sheet visibility
                 onClose={() => setIsSheetOpen(false)} // Close sheet function
+                setSelectedIdData = {setSelectedIdData}
             />
         </div>
     )

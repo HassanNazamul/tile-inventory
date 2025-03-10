@@ -32,30 +32,37 @@ interface CustomSheetProps {
     setIstableUpdated: (value: number) => void,
     selectedIdData: object | null,
     isOpen: boolean,
-    onClose: () => void
+    onClose: () => void,
+    setSelectedIdData: () => void,
 }
 
-export default function CustomSheet({ istableUpdated, setIstableUpdated, selectedIdData, isOpen, onClose }: CustomSheetProps) {
+export default function CustomSheet({ istableUpdated, setIstableUpdated, selectedIdData, isOpen, onClose, setSelectedIdData }: CustomSheetProps) {
     console.log("CustomSheet -> selectedIdData", selectedIdData)
-    
-    const [formData, setFormData] = useState({...selectedIdData});
+
+    // const [formData, setFormData] = useState({
+    //     id: 0,
+    //     name: '',
+    //     location :''
+    // });
+
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value });
+        setSelectedIdData({ ...selectedIdData, [e.target.id]: e.target.value });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            const method = formData.id ? "put" : "post";
+            const method = selectedIdData.id ? "put" : "post";
             const url = "/api/warehouse";
 
             const response = await axios({
                 method,
                 url,
                 headers: { "Content-Type": "application/json" },
-                data: formData,
+                data: selectedIdData,
             });
 
             if (response) {
@@ -66,7 +73,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
                 });
 
                 if (response.data.success = true) {
-                    setFormData({
+                    setSelectedIdData({
                         id: 0,
                         name: "",
                         location: "",
@@ -86,9 +93,9 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
             {/* Sheet Content */}
             <SheetContent side="right">
                 <SheetHeader>
-                    <SheetTitle>{formData.id === 0 ? "Add Warehouse" : "Update Warehouse"}</SheetTitle>
+                    <SheetTitle>{selectedIdData.id === 0 ? "Add Warehouse" : "Update Warehouse"}</SheetTitle>
                     <SheetDescription>
-                        {formData.id === 0
+                        {selectedIdData.id === 0
                             ? "Fill in the details to add a new warehouse."
                             : "Modify the warehouse details and click update."}
                     </SheetDescription>
@@ -111,7 +118,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
                                     type="text"
                                     id="name"
                                     placeholder="Enter warehouse name"
-                                    value={formData.name}
+                                    value={selectedIdData.name}
                                     onChange={handleChange}
                                     required
                                 />
@@ -124,7 +131,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
                                     type="text"
                                     id="location"
                                     placeholder="Enter location"
-                                    value={formData.location}
+                                    value={selectedIdData.location}
                                     onChange={handleChange}
                                     required
                                 />
@@ -139,8 +146,8 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
                                 </Button>
                             </SheetClose>
 
-                            <Button type="submit" variant={formData.id === 0 ? "secondary" : "outline"}>
-                                {formData.id === 0 ? "Add Warehouse" : "Update Warehouse"}
+                            <Button type="submit" variant={selectedIdData.id === 0 ? "secondary" : "outline"}>
+                                {selectedIdData.id === 0 ? "Add Warehouse" : "Update Warehouse"}
                             </Button>
                         </CardFooter>
                     </form>

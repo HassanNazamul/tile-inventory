@@ -118,6 +118,17 @@ export async function POST(req) {
     }
 }
 
+export async function PUT(req) {
+    const data = await req.json();
+
+    try {
+        await warehouseRepo.update(data.id, { name: data.name, location: data.location });
+        return NextResponse.json({ success: true, message: "Warehouse updated" });
+    } catch (error) {
+        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    }
+}
+
 export async function DELETE(req) {
     const { id } = await req.json();
     await warehouseRepo.delete(id);
