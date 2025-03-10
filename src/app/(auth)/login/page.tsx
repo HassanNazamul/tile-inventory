@@ -163,12 +163,14 @@ export default function LoginForm() {
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <Card>
+            
             <CardHeader>
               <CardTitle className="text-2xl">Login</CardTitle>
               <CardDescription>
                 Enter your email below to login to your account
               </CardDescription>
             </CardHeader>
+
             <CardContent>
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
@@ -184,7 +186,7 @@ export default function LoginForm() {
                       onChange={handleEmailChange}
                       placeholder="m@example.com"
                     />
-                    <div className="h-4">
+                    <div className="h-2">
                       {errors.email && <ErrorMessage message={errors.email} valid={errors.emailValid} />}
                     </div>
                   </div>
@@ -208,10 +210,11 @@ export default function LoginForm() {
                       value={passwordInput}
                       onChange={handlePasswordChange}
                     />
-                    <div className="h-4">
+                    <div className="h-2">
                       {errors.password && <ErrorMessage message={errors.password} valid={errors.passwordValid} />}
                     </div>
                   </div>
+
                   <Button type="submit" className="w-full" disabled={!isFormValid}>
                     Login
                   </Button>
