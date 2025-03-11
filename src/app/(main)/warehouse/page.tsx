@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import {
     createColumnHelper,
 } from '@tanstack/react-table';
-import ConfirmComponent from '@/app/(main)/warehouse/confirmpopup'
+import ConfirmComponent from '@/app/_common/popup/confirmpopup';
 import axios from "axios";
 
 const columnHelper = createColumnHelper()

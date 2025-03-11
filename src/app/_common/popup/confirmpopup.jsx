@@ -7,7 +7,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
+    // AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { CircleAlertIcon } from "lucide-react";
 
@@ -29,12 +29,12 @@ export default function ConfirmComponent({ isOpen, onClose, confirm }) {
                         className="flex size-9 shrink-0 items-center justify-center rounded-full border"
                         aria-hidden="true"
                     >
-                        <CircleAlertIcon className="opacity-80" size={16} />
+                        <CircleAlertIcon className="opacity-80" size={30} />
                     </div>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete your account? All your data will be removed.
+                            Are you sure you want to delete this data?.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                 </div>
