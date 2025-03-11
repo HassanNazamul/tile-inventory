@@ -11,10 +11,10 @@ import {
     SheetClose,
     SheetContent,
     SheetDescription,
-    SheetFooter,
+    // SheetFooter,
     SheetHeader,
     SheetTitle,
-    SheetTrigger,
+    // SheetTrigger,
 } from "@/components/ui/sheet";
 
 import {
@@ -27,42 +27,43 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 
+interface SheetData {
+    id: number;
+    name: string;
+    location: string;
+}
 interface CustomSheetProps {
-    istableUpdated: number,
-    setIstableUpdated: (value: number) => void,
-    selectedIdData: object | null,
-    isOpen: boolean,
-    onClose: () => void,
-    setSelectedIdData: () => void,
+    istableUpdated: number;
+    setIstableUpdated: (value: number) => void;
+    isOpen: boolean;
+    onClose: () => void;
+    sheetData: {
+        id: number,
+        name: string,
+        location: string
+    },
+    setSheetData: (data: SheetData) => void,
+    url: string
 }
 
-export default function CustomSheet({ istableUpdated, setIstableUpdated, selectedIdData, isOpen, onClose, setSelectedIdData }: CustomSheetProps) {
-    console.log("CustomSheet -> selectedIdData", selectedIdData)
-
-    // const [formData, setFormData] = useState({
-    //     id: 0,
-    //     name: '',
-    //     location :''
-    // });
-
-
+export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen, onClose, sheetData, setSheetData, url }: CustomSheetProps) {
+    console.log("CustomSheet -> sheetData", sheetData)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedIdData({ ...selectedIdData, [e.target.id]: e.target.value });
+        setSheetData({ ...sheetData, [e.target.id]: e.target.value });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            const method = selectedIdData.id ? "put" : "post";
-            const url = "/api/warehouse";
+            const method = sheetData?.id ? "put" : "post";
 
             const response = await axios({
                 method,
                 url,
                 headers: { "Content-Type": "application/json" },
-                data: selectedIdData,
+                data: sheetData,
             });
 
             if (response) {
@@ -73,7 +74,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
                 });
 
                 if (response.data.success = true) {
-                    setSelectedIdData({
+                    setSheetData({
                         id: 0,
                         name: "",
                         location: "",
@@ -93,9 +94,9 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
             {/* Sheet Content */}
             <SheetContent side="right">
                 <SheetHeader>
-                    <SheetTitle>{selectedIdData.id === 0 ? "Add Warehouse" : "Update Warehouse"}</SheetTitle>
+                    <SheetTitle>{sheetData?.id === 0 ? "Add Warehouse" : "Update Warehouse"}</SheetTitle>
                     <SheetDescription>
-                        {selectedIdData.id === 0
+                        {sheetData?.id === 0
                             ? "Fill in the details to add a new warehouse."
                             : "Modify the warehouse details and click update."}
                     </SheetDescription>
@@ -118,7 +119,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
                                     type="text"
                                     id="name"
                                     placeholder="Enter warehouse name"
-                                    value={selectedIdData.name}
+                                    value={sheetData?.name}
                                     onChange={handleChange}
                                     required
                                 />
@@ -131,7 +132,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
                                     type="text"
                                     id="location"
                                     placeholder="Enter location"
-                                    value={selectedIdData.location}
+                                    value={sheetData?.location}
                                     onChange={handleChange}
                                     required
                                 />
@@ -146,8 +147,8 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, selecte
                                 </Button>
                             </SheetClose>
 
-                            <Button type="submit" variant={selectedIdData.id === 0 ? "secondary" : "outline"}>
-                                {selectedIdData.id === 0 ? "Add Warehouse" : "Update Warehouse"}
+                            <Button type="submit" variant={sheetData?.id === 0 ? "secondary" : "outline"}>
+                                {sheetData?.id === 0 ? "Add Warehouse" : "Update Warehouse"}
                             </Button>
                         </CardFooter>
                     </form>

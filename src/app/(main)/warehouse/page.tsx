@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import CustomDrawer from "@/app/(main)/warehouse/drawer"
-import CustomSheet from "@/app/(main)/warehouse/sheet"
+// import CustomDrawer from "./drawer"
+import CustomSheet from "./sheet"
 import CustomTable from "@/app/_common/customtable/table"
 import { FilePenLine, Trash } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -15,6 +15,11 @@ import axios from "axios";
 
 const columnHelper = createColumnHelper()
 
+interface sheetDataInterface {
+    id: number,
+    name: string,
+    location: string
+}
 
 export default function Page() {
 
@@ -22,7 +27,7 @@ export default function Page() {
 
     const [istableUpdated, setIstableUpdated] = useState(1);
 
-    const [selectedIdData, setSelectedIdData] = useState<object | null>({
+    const [sheetData, setSheetData] = useState<sheetDataInterface>({
         id: 0,
         name: "",
         location: "",
@@ -72,7 +77,7 @@ export default function Page() {
                             });
 
                             // set the row data to the state
-                            setSelectedIdData({
+                            setSheetData({
                                 id: info.row.original.id,
                                 name: info.row.original.name,
                                 location: info.row.original.location,
@@ -136,29 +141,14 @@ export default function Page() {
     return (
         <div className="flex flex-col gap-4 p-4 pt-0">
 
-            {/* <div className="grid auto-rows-min gap-4 md:grid-cols-8 sd:grid-cols-4 xsd:grid-cols-2">
-                <div className="rounded-xl bg-muted/50 p-2">
-                    <CustomDrawer />
-                </div>
-                <div className="rounded-xl bg-muted/50 p-2">
-                    <CustomSheet istableUpdated={istableUpdated} setIstableUpdated={setIstableUpdated} />
-                </div>
-                <div className="rounded-xl bg-muted/50"></div>
-                <div className="rounded-xl bg-muted/50"></div>
-                <div className="rounded-xl bg-muted/50"></div>
-                <div className="rounded-xl bg-muted/50"></div>
-                <div className="rounded-xl bg-muted/50"></div>
-                <div className="rounded-xl bg-muted/50"></div>
-            </div> */}
-
             <div className="flex-1 rounded-xl bg-muted/50 p-2">
                 <div className="flex gap-4 justify-end">
-                    <CustomDrawer />
+                    {/* <CustomDrawer /> */}
 
                     {/* Button to Open Sheet */}
                     <Button variant="outline"
                         onClick={() => {
-                            setSelectedIdData({
+                            setSheetData({
                                 id: 0,
                                 name: "",
                                 location: "",
@@ -170,38 +160,19 @@ export default function Page() {
                 <CustomTable tableDesc="A list of your warehouses." url={url} columns={columns} istableUpdated={istableUpdated} />
             </div>
 
-            {/* <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-            </div>
-
-            <div className="flex-1 rounded-xl bg-muted/50 p-2">
-                <CustomTable />
-            </div>
-
-            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-            </div>
-
-            <div className="flex-1 rounded-xl bg-muted/50 p-2">
-                <CustomTable />
-            </div> */}
             <CustomSheet
                 istableUpdated={istableUpdated}
                 setIstableUpdated={setIstableUpdated}
-                selectedIdData={selectedIdData} // Pass the selected ID
-                isOpen={isSheetOpen} // Control sheet visibility
-                onClose={() => setIsSheetOpen(false)} // Close sheet function
-                setSelectedIdData={setSelectedIdData}
+                isOpen={isSheetOpen}
+                onClose={() => setIsSheetOpen(false)}
+                sheetData={sheetData}
+                setSheetData={setSheetData}
+                url={url}
             />
 
             <ConfirmComponent
-                isOpen={isConfirmAlert} // Control sheet visibility
-                onClose={() => setIsConfirmAlert(false)} // Close sheet function
+                isOpen={isConfirmAlert}
+                onClose={() => setIsConfirmAlert(false)}
                 confirm={alertData}
             />
         </div>
