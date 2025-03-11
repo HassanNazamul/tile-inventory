@@ -1,4 +1,4 @@
-import { mysqlTable, serial, int, varchar, timestamp, mysqlEnum } from 'drizzle-orm/mysql-core';
+import { mysqlTable, serial, int, varchar, timestamp, mysqlEnum, tinyint } from 'drizzle-orm/mysql-core';
 // import { boolean } from 'drizzle-orm/pg-core';
 
 // Users Table
@@ -60,6 +60,7 @@ export const inventory = mysqlTable("inventory", {
 export const dimentions = mysqlTable('dimentions', {
     id: serial().primaryKey(),
     name: varchar({ length: 255 }).notNull().unique(),
+    surface: tinyint().notNull().default(0),
     createdAt: timestamp().defaultNow().notNull(),
 });
 

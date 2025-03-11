@@ -71,7 +71,7 @@ const data = {
         },
         {
           title: "Add Size",
-          url: "/inventory/dimensions",
+          url: "/inventory/sizes",
         },
       ],
     },
