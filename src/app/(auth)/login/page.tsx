@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import ErrorMessage from "../error-message";
 import Link from "next/link";
+import PageTransitionLoader from "@/app/_common/animations/page-transition";
 
 // to send requesto to server
 interface FormDataInterface {
@@ -32,6 +33,7 @@ const schema = z.object({
 
 export default function LoginForm() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   //state for email and pssword
   const [emailInput, setEmailInput] = useState("");
@@ -106,6 +108,7 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     let post;
     try {
@@ -115,13 +118,12 @@ export default function LoginForm() {
       setErrors((prevErrors) => ({
         ...prevErrors,
         password: "invalid credentials",
-      }));
-
-      setErrors((prevErrors) => ({
-        ...prevErrors,
+        passwordValid: false,
         email: "invalid credentials",
+        emailValid: false
       }));
 
+      setLoading(false); // Hide loader only if there's an error
     }
 
 
@@ -130,7 +132,9 @@ export default function LoginForm() {
     if (post?.status === 200) {
       router.push("/ex-warehouse");
     }
-  }
+
+
+  }//end of handleSubmit
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
@@ -146,6 +150,11 @@ export default function LoginForm() {
             </CardHeader>
 
             <CardContent>
+              {/* Fullscreen loader */}
+              {loading && (
+                <PageTransitionLoader />
+              )}
+
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
 
@@ -169,12 +178,6 @@ export default function LoginForm() {
                   <div className="grid gap-2">
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
-                      {/* <a
-                        href="#"
-                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                      >
-                        Forgot your password?
-                      </a> */}
                     </div>
                     <Input
                       id="password"
@@ -192,9 +195,6 @@ export default function LoginForm() {
                   <Button type="submit" className="w-full" disabled={!isFormValid}>
                     Login
                   </Button>
-                  {/* <Button variant="outline" className="w-full">
-                    Login with Google
-                  </Button> */}
                 </div>
 
                 {/* Signup */}
@@ -209,8 +209,9 @@ export default function LoginForm() {
           </Card>
         </div>
       </div>
-    </div >
+    </div>
   );
+
 
 
 
