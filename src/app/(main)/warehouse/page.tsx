@@ -10,11 +10,15 @@ import { Button } from "@/components/ui/button";
 import {
     createColumnHelper,
 } from '@tanstack/react-table';
+import ConfirmComponent from '@/app/(main)/warehouse/confirmpopup'
+import axios from "axios";
 
 const columnHelper = createColumnHelper()
 
 
 export default function Page() {
+
+    const url = "/api/warehouse";
 
     const [istableUpdated, setIstableUpdated] = useState(1);
 
@@ -24,7 +28,10 @@ export default function Page() {
         location: "",
     }); // Store the selected row ID
 
-    const [isSheetOpen, setIsSheetOpen] = useState(false); // Control sheet visibility
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [isConfirmAlert, setIsConfirmAlert] = useState(false);
+
+    const [alertData, setAlertData] = useState<(() => Promise<void>) | null>(null);
 
     // Table Columns
     const columns = [
@@ -65,7 +72,7 @@ export default function Page() {
                             });
 
                             // set the row data to the state
-                            setSelectedIdData( {
+                            setSelectedIdData({
                                 id: info.row.original.id,
                                 name: info.row.original.name,
                                 location: info.row.original.location,
@@ -78,13 +85,39 @@ export default function Page() {
                     <Trash className='text-red-300 hover:text-red-700 cursor-pointer'
                         onClick={() => {
 
-                            toast(`Your id = ${info.row.original.id}  file is deleted`, {
-                                description: "Sunday, December 03, 2023 at 9:00 AM",
-                                action: {
-                                    label: "Undo",
-                                    onClick: () => console.log("Undo"),
-                                },
+                            setAlertData(() => async () => {
+                                try {
+                                    const response = await axios.delete(url, {
+                                        headers: { "Content-Type": "application/json" },
+                                        data: { id: info.row.original.id }
+                                    });
+
+                                    // console.log("Deleted successfully:", response.data);
+                                    setIstableUpdated((prev) => prev + 1);
+
+                                    toast(`Your id = ${info.row.original.id}  file is Deleted successfully`, {
+                                        description: response.data.message,
+                                        action: {
+                                            label: "Undo",
+                                            onClick: () => console.log("Undo"),
+                                        },
+                                    });
+
+                                } catch (error) {
+                                    // console.error("Error deleting:", error);
+
+                                    toast(`Your id = ${info.row.original.id}  file is Delete failed`, {
+                                        description: "Failed,",
+                                        // action: {
+                                        //     label: "Undo",
+                                        //     onClick: () => console.log("Undo"),
+                                        // },
+                                    });
+                                }
                             });
+
+
+                            setIsConfirmAlert(true);
 
                         }}
                     />
@@ -134,7 +167,7 @@ export default function Page() {
                         }}
                     >Add Warehouse</Button>
                 </div>
-                <CustomTable tableDesc="A list of your warehouses." url="/api/warehouse" columns={columns} istableUpdated={istableUpdated} />
+                <CustomTable tableDesc="A list of your warehouses." url={url} columns={columns} istableUpdated={istableUpdated} />
             </div>
 
             {/* <div className="grid auto-rows-min gap-4 md:grid-cols-4">
@@ -163,7 +196,13 @@ export default function Page() {
                 selectedIdData={selectedIdData} // Pass the selected ID
                 isOpen={isSheetOpen} // Control sheet visibility
                 onClose={() => setIsSheetOpen(false)} // Close sheet function
-                setSelectedIdData = {setSelectedIdData}
+                setSelectedIdData={setSelectedIdData}
+            />
+
+            <ConfirmComponent
+                isOpen={isConfirmAlert} // Control sheet visibility
+                onClose={() => setIsConfirmAlert(false)} // Close sheet function
+                confirm={alertData}
             />
         </div>
     )
