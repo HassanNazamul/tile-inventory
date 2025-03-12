@@ -67,7 +67,7 @@ const data = {
         },
         {
           title: "Add Brand",
-          url: "/inventory/categories",
+          url: "/inventory/brands",
         },
         {
           title: "Add Size",

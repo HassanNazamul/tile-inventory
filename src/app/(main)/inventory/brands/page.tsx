@@ -17,20 +17,18 @@ const columnHelper = createColumnHelper()
 
 interface sheetDataInterface {
     id: number,
-    name: string,
-    surface: number
+    name: string
 }
 
 export default function Page() {
 
-    const url = "/api/inventory/sizes";
+    const url = "/api/inventory/brands";
 
     const [istableUpdated, setIstableUpdated] = useState(1);
 
     const [sheetData, setSheetData] = useState<sheetDataInterface>({
         id: 0,
-        name: "",
-        surface: 0,
+        name: ""
     }); // Store the selected row ID
 
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -55,10 +53,13 @@ export default function Page() {
             // enableSorting: true, // Enable sorting
             // filterFn: "includes", // Enable search
         }),
-        columnHelper.accessor("surface", {
-            cell: (info) => (info.getValue() == 0) ? 'No' : 'Yes',
-            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
-            size: 100
+        columnHelper.accessor("createdAt", {
+            cell: (info) => {
+                const date = new Date(info.getValue());
+                return date.toLocaleString();
+            },
+            header: (props) => "Created At",
+            size: 50
 
             // footer: (info) => info.column.id,
             // enableSorting: true, // Enable sorting
@@ -79,8 +80,7 @@ export default function Page() {
                             // set the row data to the state
                             setSheetData({
                                 id: info.row.original.id,
-                                name: info.row.original.name,
-                                surface: info.row.original.surface,
+                                name: info.row.original.name
                             }); // Set the sele
                             setIsSheetOpen(true); // Open the CustomSheet
                             console.log("info", info.row.original.name);
@@ -150,12 +150,11 @@ export default function Page() {
                         onClick={() => {
                             setSheetData({
                                 id: 0,
-                                name: "",
-                                surface: 0,
+                                name: ""
                             });
                             setIsSheetOpen(true);
                         }}
-                    >Add Size</Button>
+                    >Add Brand</Button>
                 </div>
                 <CustomTable tableDesc="A list of your sizes." url={url} columns={columns} istableUpdated={istableUpdated} />
             </div>
