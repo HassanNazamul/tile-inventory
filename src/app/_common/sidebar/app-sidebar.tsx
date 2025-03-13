@@ -3,15 +3,16 @@
 import * as React from "react"
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
+  ListCheck,
+  ShoppingBag,
   Command,
   Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
   Settings2,
-  SquareTerminal,
+  LayoutList,
+  Warehouse,
 } from "lucide-react"
 
 import { NavMain } from "@/app/_common/sidebar/nav-main"
@@ -54,7 +55,7 @@ const data = {
     {
       title: "Inventory",
       url: "/inventory",
-      icon: SquareTerminal,
+      icon: ShoppingBag,
       isActive: true,
       items: [
         {
@@ -78,7 +79,7 @@ const data = {
     {
       title: "Sales",
       url: "/sales",
-      icon: Bot,
+      icon: LayoutList,
       items: [
         {
           title: "Manage Sales",
@@ -89,7 +90,7 @@ const data = {
     {
       title: "Warehouse",
       url: "/warehouse",
-      icon: BookOpen,
+      icon: Warehouse,
       items: [
         {
           title: "Manage Warehouse",
