@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import ErrorMessage from "../error-message";
 import Link from "next/link";
-import PageTransitionLoader from "@/app/_common/animations/page-transition";
+// import PageTransitionLoader from "@/app/_common/animations/page-transition";
 
 // to send requesto to server
 interface FormDataInterface {
@@ -150,10 +150,6 @@ export default function LoginForm() {
             </CardHeader>
 
             <CardContent>
-              {/* Fullscreen loader */}
-              {loading && (
-                <PageTransitionLoader />
-              )}
 
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">

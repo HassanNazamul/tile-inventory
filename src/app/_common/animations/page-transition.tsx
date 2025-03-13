@@ -1,23 +1,28 @@
-import React from "react";
-import { motion } from "framer-motion";
+"use client";
 
-const PageTransitionLoader = () => {
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export default function PageTransitionLoader({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const timeout = setTimeout(() => setLoading(false), 500); // Adjust duration if needed
+    return () => clearTimeout(timeout);
+  }, [pathname]);
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="flex items-center justify-center">
-        <motion.div
-          className="w-16 h-16 border-4 border-t-4 border-white rounded-full"
-          animate={{ rotate: 360 }}
-          transition={{
-            repeat: Infinity,
-            duration: 1,
-            ease: "linear",
-          }}
-        />
-        <span className="text-white ml-4">Loading...</span>
-      </div>
+    <div className="relative">
+      {/* Only show loader overlay on page content */}
+      {loading && (
+        <div className="fixed w-full h-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+          {/* No spinner here */}
+        </div>
+      )}
+      {children}
     </div>
   );
-};
-
-export default PageTransitionLoader;
+}

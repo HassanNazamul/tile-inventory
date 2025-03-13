@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { z } from 'zod';
 import ErrorMessage from '../error-message';
-import PageTransitionLoader from '@/app/_common/animations/page-transition';
+// import PageTransitionLoader from '@/app/_common/animations/page-transition';
 
 interface DataInterface {
     name: string;
@@ -163,11 +163,6 @@ export default function SignUp() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-
-                            {/* Fullscreen loader */}
-                            {loading && (
-                                <PageTransitionLoader />
-                            )}
 
                             <form onSubmit={handleSubmit} className="space-y-4">
 

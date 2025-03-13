@@ -11,6 +11,7 @@ import "@/app/globals.css";
 import { ThemeProvider } from "../_common/theme/theme-provider";
 // import Header from "../_common/header";
 import { Toaster } from "@/components/ui/sonner"
+import PageTransitionLoader from "../_common/animations/page-transition";
 
 
 
@@ -53,8 +54,9 @@ export default function RootLayout({
             <AppSidebar />
             <SidebarInset>
               <BreadCrumb />
-
-              {children}
+              <PageTransitionLoader>
+                {children}
+              </PageTransitionLoader>
 
             </SidebarInset>
           </SidebarProvider>
