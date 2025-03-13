@@ -18,7 +18,7 @@ export default function PageTransitionLoader({ children }: { children: React.Rea
     <div className="relative">
       {/* Only show loader overlay on page content */}
       {loading && (
-        <div className="fixed w-full h-full bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed w-full h-full backdrop-blur-sm flex items-center justify-center z-50">
           {/* No spinner here */}
         </div>
       )}
