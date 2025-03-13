@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import ErrorMessage from "../error-message";
 import Link from "next/link";
+import AuthPageTransition from "@/app/_common/animations/auth-transistion";
 // import PageTransitionLoader from "@/app/_common/animations/page-transition";
 
 // to send requesto to server
@@ -108,33 +109,37 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true); // Start loading
 
     let post;
     try {
       post = await axios.post("/api/login", data);
-    }
-    catch (err) {
+      if (post?.status === 200) {
+        router.push("/warehouse");
+      } else {
+        // Handle any other status if needed
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Invalid credentials",
+          emailValid: false,
+          password: "Invalid credentials",
+          passwordValid: false,
+        }));
+      }
+    } catch (err) {
+      // Handle error
       setErrors((prevErrors) => ({
         ...prevErrors,
-        password: "invalid credentials",
+        email: "Invalid credentials",
+        emailValid: false,
+        password: "Invalid credentials",
         passwordValid: false,
-        email: "invalid credentials",
-        emailValid: false
       }));
-
-      setLoading(false); // Hide loader only if there's an error
+    } finally {
+      setLoading(false); // Stop loading after the request is complete
     }
+  };
 
-
-
-    // console.log('Status:', data);
-    if (post?.status === 200) {
-      router.push("/warehouse");
-    }
-
-
-  }//end of handleSubmit
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
@@ -151,6 +156,10 @@ export default function LoginForm() {
 
             <CardContent>
 
+              {/* Fullscreen loader */}
+              {loading && data.email && (
+                <AuthPageTransition />
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
 
