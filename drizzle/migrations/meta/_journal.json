@@ -8,6 +8,41 @@
       "when": 1729995448447,
       "tag": "0000_solid_earthquake",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1741982463303,
+      "tag": "0001_loose_black_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1741983168963,
+      "tag": "0002_steep_sentinel",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1741983258953,
+      "tag": "0003_exotic_talkback",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1741991192246,
+      "tag": "0004_confused_slayback",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1741991351375,
+      "tag": "0005_daily_dreadnoughts",
+      "breakpoints": true
     }
   ]
 }

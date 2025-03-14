@@ -12,6 +12,7 @@ import {
 } from '@tanstack/react-table';
 import ConfirmComponent from '@/app/_common/popup/confirmpopup';
 import axios from "axios";
+import { Badge } from "@/components/ui/badge";
 
 const columnHelper = createColumnHelper()
 
@@ -20,8 +21,8 @@ interface sheetDataInterface {
     name: string,
     categoryId: string,
     dimensionId: string,
+    surfaceId: string,
     boxQuantity: string,
-    surface: string,
 }
 
 export default function Page() {
@@ -35,8 +36,8 @@ export default function Page() {
         name: "",
         categoryId: "",
         dimensionId: "",
+        surfaceId: "",
         boxQuantity: "",
-        surface: "",
     }); // Store the selected row ID
 
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -50,26 +51,49 @@ export default function Page() {
             header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
             cell: (info) => info.getValue(),
             size: 20,
-            enableResizing: true, // Allow resizing
         }),
         columnHelper.accessor("name", {
             cell: (info) => info.getValue(),
             header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
-            size: 100
+            size: 80
 
             // footer: (info) => info.column.id,
             // enableSorting: true, // Enable sorting
             // filterFn: "includes", // Enable search
         }),
-        columnHelper.accessor("location", {
+        columnHelper.accessor("categoryName", {
             cell: (info) => info.getValue(),
             header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
-            size: 100
-
-            // footer: (info) => info.column.id,
-            // enableSorting: true, // Enable sorting
-            // filterFn: "includes", // Enable search
+            size: 50
         }),
+
+        columnHelper.accessor("dimensionName", {
+            cell: (info) => {
+                return <Badge variant="secondary">{info.getValue()}</Badge>
+            },
+            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+            size: 50
+        }),
+
+        columnHelper.accessor("boxQuantity", {
+            cell: (info) => {
+                let val = info.getValue();
+                return <Badge>{val}</Badge>
+            },
+            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+            size: 30
+        }),
+        columnHelper.accessor("createdAt", {
+            // cell: (info) => info.getValue(),
+            cell: (info) => {
+                const date = new Date(info.getValue());
+                return <small>{date.toLocaleString()}</small>;
+            },
+            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+            size: 30
+        }),
+
+
         columnHelper.accessor("action", {
             header: (props) => <span>{props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1)}</span>,
             cell: (info: any) => (
@@ -86,7 +110,10 @@ export default function Page() {
                             setSheetData({
                                 id: info.row.original.id,
                                 name: info.row.original.name,
-                                location: info.row.original.location,
+                                categoryId: info.row.original.categoryId,
+                                dimensionId: info.row.original.dimensionId,
+                                surfaceId: info.row.original.surfaceId,
+                                boxQuantity: info.row.original.boxQuantity,
                             }); // Set the sele
                             setIsSheetOpen(true); // Open the CustomSheet
                             console.log("info", info.row.original.name);
@@ -136,7 +163,7 @@ export default function Page() {
 
                 </span>
             ),
-            size: 20
+            size: 25
 
             // footer: (info) => "",
             // enableSorting: false, // Disable sorting for action column
@@ -159,8 +186,8 @@ export default function Page() {
                                 name: "",
                                 categoryId: "",
                                 dimensionId: "",
+                                surfaceId: "",
                                 boxQuantity: "",
-                                surface: ""
                             });
                             setIsSheetOpen(true);
                         }}

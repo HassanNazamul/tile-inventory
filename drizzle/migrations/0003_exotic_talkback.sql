@@ -1,0 +1,1 @@
+ALTER TABLE `products` ADD `surfaceId` int NOT NULL;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import {
@@ -44,8 +44,8 @@ interface SheetData {
     name: string;
     categoryId: string;
     dimensionId: string;
+    surfaceId: string;
     boxQuantity: string;
-    surface: string;
 }
 
 interface CustomSheetProps {
@@ -67,16 +67,20 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
 
     const [brands, setBrands] = useState<any[]>([]);
     const [sizes, setSizes] = useState<any[]>([]);
+    const [displaySurface, setDisplaySurface] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetchOtherData() {
             let res = await axios.get("/api/inventory/brands?limit=500");
-            console.log(res);
             setBrands(res.data.data);
             res = await axios.get("/api/inventory/sizes?limit=500");
-            setSizes(res.data.data)
+            setSizes(res.data.data);
         }
         fetchOtherData();
+
+        if (sizes[Number(sheetData?.dimensionId)]?.surface == 1) {
+            setDisplaySurface(true);
+        }
     }, []);
 
 
@@ -90,9 +94,18 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
     };
 
     const handleSurfaceChange = (value: string) => {
-        setSheetData({ ...sheetData, surface: value });
+        setSheetData({ ...sheetData, surfaceId: value });
     };
 
+    const handleSizeChange = (value: string) => {
+        setSheetData({ ...sheetData, dimensionId: String(value) });
+
+        if (sizes[Number(value)]?.surface == 1) {
+            setDisplaySurface(true);
+        } else {
+            setDisplaySurface(false);
+        }
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -120,8 +133,8 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
                         name: "",
                         categoryId: "",
                         dimensionId: "",
+                        surfaceId: "",
                         boxQuantity: "",
-                        surface: "",
                     });
                     setIstableUpdated(++istableUpdated);
                     onClose();
@@ -142,9 +155,9 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
 
                 <SheetHeader>
                     <SheetTitle>{sheetData?.id === 0 ? "Add Desing" : "Update Desing"}</SheetTitle>
-                    {/* <SheetDescription>
+                    <SheetDescription>
                         {sheetData?.id === 0 ? "Fill in the details to add a new Desing." : "Modify the Desing details and click update."}
-                    </SheetDescription> */}
+                    </SheetDescription>
                 </SheetHeader>
 
                 <Card className="mt-4">
@@ -162,7 +175,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
 
                             <div className="grid gap-2">
                                 <Label htmlFor="categoryId">Brands</Label>
-                                <Select name="categoryId" onValueChange={handleBrandChange} value={sheetData?.categoryId}>
+                                <Select name="categoryId" onValueChange={handleBrandChange} value={String(sheetData?.categoryId)}>
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Theme" />
                                     </SelectTrigger>
@@ -182,7 +195,7 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
                                     <ToggleGroup
                                         type="single"
                                         value={String(sheetData.dimensionId)}
-                                        onValueChange={(value) => value && setSheetData({ ...sheetData, dimensionId: String(value) })}
+                                        onValueChange={handleSizeChange}
                                         className="flex flex-wrap gap-1 p-2"
                                     >
                                         {sizes.map((dim) => (
@@ -200,23 +213,24 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
                                 <small className="font-thin  text-teal-500">What type of size?</small>
                             </div>
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="surface">Surface</Label>
-                                <Select name="categoryId" onValueChange={handleSurfaceChange} value={sheetData?.surface}>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Theme" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {surfaceOptions.map((surface, index) => (
-                                            <SelectItem key={index} value={surface}>
-                                                {surface}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <small className="font-thin  text-teal-500">What type of surface?</small>
-                            </div>
-
+                            {(displaySurface == false) ?
+                                <div className="grid gap-2">
+                                    <Label htmlFor="surface">Surface {displaySurface}</Label>
+                                    <Select name="categoryId" onValueChange={handleSurfaceChange} value={String(sheetData?.surfaceId)}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Theme" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {surfaceOptions.map((surface, index) => (
+                                                <SelectItem key={index} value={String(index)}>
+                                                    {surface}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <small className="font-thin  text-teal-500">What type of surface?</small>
+                                </div>
+                            : ""}
                             <div className="grid gap-2">
                                 <Label htmlFor="boxQuantity">Quantity per Box</Label>
                                 <Input type="number" id="boxQuantity" name="boxQuantity" placeholder="E.g. 2, 3, 5 .." value={sheetData?.boxQuantity} onChange={handleChange} required />

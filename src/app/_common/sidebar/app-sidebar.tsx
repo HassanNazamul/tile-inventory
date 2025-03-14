@@ -67,6 +67,10 @@ const data = {
           url: "/inventory/desings",
         },
         {
+          title: "Add Surface",
+          url: "/inventory/surfaces",
+        },
+        {
           title: "Add Brand",
           url: "/inventory/brands",
         },

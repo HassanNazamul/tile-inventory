@@ -8,6 +8,8 @@ export const users = mysqlTable('users', {
     email: varchar({ length: 255 }).notNull().unique(),
     password: varchar({ length: 255 }).notNull(),
     // acceptTerms: boolean().default(false).notNull()
+    createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
 });
 
 // Warehouses Table
@@ -26,6 +28,8 @@ export const warehouses = mysqlTable('warehouses', {
     id: serial().primaryKey(),
     name: varchar({ length: 255 }).notNull(),
     location: varchar({ length: 255 }).notNull(),
+    createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
 });
 
 // Categories Table
@@ -33,6 +37,14 @@ export const categories = mysqlTable('categories', {
     id: serial().primaryKey(),
     name: varchar({ length: 255 }).notNull().unique(),
     createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
+});
+
+export const surfaces = mysqlTable('surfaces', {
+    id: serial().primaryKey(),
+    name: varchar({ length: 255 }).notNull().unique(),
+    createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
 });
 
 // Products Table
@@ -41,6 +53,7 @@ export const products = mysqlTable('products', {
     name: varchar({ length: 255 }).notNull(),
     categoryId: int().notNull(),
     dimensionId: int().notNull(),
+    surfaceId: int().default(0),
     boxQuantity: int().notNull(), // Tiles per box
     createdAt: timestamp().defaultNow().notNull(),
     updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
@@ -53,6 +66,7 @@ export const inventory = mysqlTable("inventory", {
     productId: int().notNull(),
     totalBoxesIn: int().notNull().default(0),  // Default value 0
     totalBoxesOut: int().notNull().default(0), // Default value 0
+    createdAt: timestamp().defaultNow().notNull(),
     updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
 });
 
@@ -62,6 +76,7 @@ export const dimentions = mysqlTable('dimentions', {
     name: varchar({ length: 255 }).notNull().unique(),
     surface: tinyint().notNull().default(0),
     createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
 });
 
 
@@ -89,6 +104,7 @@ export const buyers = mysqlTable("buyers", {
     email: varchar({ length: 255 }),
     address: varchar({ length: 500 }),
     createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
 });
 
 
@@ -109,4 +125,5 @@ export const orderItems = mysqlTable("order_items", {
     inventoryId: int().notNull(),   // Foreign key to inventory
     orderedQty: int().notNull(),    // Quantity ordered
     createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().onUpdateNow().notNull(),
 });
