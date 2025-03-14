@@ -64,7 +64,7 @@ const data = {
         },
         {
           title: "Add Design Name",
-          url: "/inventory/products",
+          url: "/inventory/desings",
         },
         {
           title: "Add Brand",
