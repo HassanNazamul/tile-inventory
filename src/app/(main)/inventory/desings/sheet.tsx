@@ -67,6 +67,8 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
 
     const [brands, setBrands] = useState<any[]>([]);
     const [sizes, setSizes] = useState<any[]>([]);
+    const [surfaces, setSurfaces] = useState<any[]>([]);
+
     const [displaySurface, setDisplaySurface] = useState<boolean>(false);
 
     useEffect(() => {
@@ -75,6 +77,8 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
             setBrands(res.data.data);
             res = await axios.get("/api/inventory/sizes?limit=500");
             setSizes(res.data.data);
+            res = await axios.get("/api/inventory/surfaces?limit=500");
+            setSurfaces(res.data.data);
         }
         fetchOtherData();
 
@@ -221,9 +225,9 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
                                             <SelectValue placeholder="Theme" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {surfaceOptions.map((surface, index) => (
-                                                <SelectItem key={index} value={String(index)}>
-                                                    {surface}
+                                            {surfaces.map((surface) => (
+                                                <SelectItem key={surface.id} value={String(surface.id)}>
+                                                    {surface.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

@@ -4,6 +4,7 @@ import { db } from "@db/db";
 import { products } from "@db/schema";
 import { categories } from "@db/schema";
 import { dimentions } from "@db/schema";
+import { surfaces } from "@db/schema";
 import { and, like, asc, desc, eq } from "drizzle-orm";
 
 
@@ -57,6 +58,7 @@ export async function GET(req) {
                 name: products.name,
                 categoryName: categories.name,
                 dimensionName: dimentions.name,
+                surfaceName: surfaces.name,
                 boxQuantity: products.boxQuantity,
                 createdAt: products.createdAt,
                 categoryId: products.categoryId,
@@ -66,6 +68,7 @@ export async function GET(req) {
             .from(products)
             .innerJoin(categories, eq(products.categoryId, categories.id))
             .innerJoin(dimentions, eq(products.dimensionId, dimentions.id))
+            .leftJoin(surfaces, eq(products.surfaceId, surfaces.id))
             .where(searchConditions.length ? and(...searchConditions) : undefined)
             .orderBy(...(sortFields.length ? sortFields : [asc(products.id)])) // Default sorting by ID
             .limit(limit)
@@ -77,6 +80,7 @@ export async function GET(req) {
             .from(products)
             .innerJoin(categories, eq(products.categoryId, categories.id))
             .innerJoin(dimentions, eq(products.dimensionId, dimentions.id))
+            .leftJoin(surfaces, eq(products.surfaceId, surfaces.id))
             .where(searchConditions.length ? and(...searchConditions) : undefined);
 
         const total = totalResult.length > 0 ? totalResult[0].total : 0;

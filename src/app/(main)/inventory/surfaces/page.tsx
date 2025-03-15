@@ -12,32 +12,23 @@ import {
 } from '@tanstack/react-table';
 import ConfirmComponent from '@/app/_common/popup/confirmpopup';
 import axios from "axios";
-import { Badge } from "@/components/ui/badge";
 
 const columnHelper = createColumnHelper()
 
 interface sheetDataInterface {
     id: number,
-    name: string,
-    categoryId: string,
-    dimensionId: string,
-    surfaceId: string,
-    boxQuantity: string,
+    name: string
 }
 
 export default function Page() {
 
-    const url = "/api/inventory/desings";
+    const url = "/api/inventory/surfaces";
 
     const [istableUpdated, setIstableUpdated] = useState(1);
 
     const [sheetData, setSheetData] = useState<sheetDataInterface>({
         id: 0,
-        name: "",
-        categoryId: "",
-        dimensionId: "",
-        surfaceId: "",
-        boxQuantity: "",
+        name: ""
     }); // Store the selected row ID
 
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -51,61 +42,26 @@ export default function Page() {
             header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
             cell: (info) => info.getValue(),
             size: 20,
+            enableResizing: true, // Allow resizing
         }),
         columnHelper.accessor("name", {
             cell: (info) => info.getValue(),
             header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
-            size: 80
+            size: 100
 
             // footer: (info) => info.column.id,
             // enableSorting: true, // Enable sorting
             // filterFn: "includes", // Enable search
         }),
-        columnHelper.accessor("categoryName", {
+        columnHelper.accessor("createdAt", {
             cell: (info) => info.getValue(),
             header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
-            size: 50
+            size: 100
+
+            // footer: (info) => info.column.id,
+            // enableSorting: true, // Enable sorting
+            // filterFn: "includes", // Enable search
         }),
-
-        // columnHelper.accessor("surfaceName", {
-        //     cell: (info) => {
-        //         return <Badge variant="secondary">{info.getValue()}</Badge>
-        //     },
-        //     header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
-        //     size: 50
-        // }),
-
-        columnHelper.accessor("dimensionName", {
-            cell: (info) => {
-                return <>
-                <Badge variant="secondary">{info.getValue()}</Badge>
-                <br/>
-                <code>{info.row.original.surfaceName}</code>
-                </>
-            },
-            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
-            size: 50
-        }),
-
-        columnHelper.accessor("boxQuantity", {
-            cell: (info) => {
-                let val = info.getValue();
-                return <Badge>{val}</Badge>
-            },
-            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
-            size: 30
-        }),
-        columnHelper.accessor("createdAt", {
-            // cell: (info) => info.getValue(),
-            cell: (info) => {
-                const date = new Date(info.getValue());
-                return <small>{date.toLocaleString()}</small>;
-            },
-            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
-            size: 30
-        }),
-
-
         columnHelper.accessor("action", {
             header: (props) => <span>{props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1)}</span>,
             cell: (info: any) => (
@@ -121,11 +77,7 @@ export default function Page() {
                             // set the row data to the state
                             setSheetData({
                                 id: info.row.original.id,
-                                name: info.row.original.name,
-                                categoryId: info.row.original.categoryId,
-                                dimensionId: info.row.original.dimensionId,
-                                surfaceId: info.row.original.surfaceId,
-                                boxQuantity: info.row.original.boxQuantity,
+                                name: info.row.original.name
                             }); // Set the sele
                             setIsSheetOpen(true); // Open the CustomSheet
                             console.log("info", info.row.original.name);
@@ -175,7 +127,7 @@ export default function Page() {
 
                 </span>
             ),
-            size: 25
+            size: 20
 
             // footer: (info) => "",
             // enableSorting: false, // Disable sorting for action column
@@ -195,17 +147,13 @@ export default function Page() {
                         onClick={() => {
                             setSheetData({
                                 id: 0,
-                                name: "",
-                                categoryId: "",
-                                dimensionId: "",
-                                surfaceId: "",
-                                boxQuantity: "",
+                                name: ""
                             });
                             setIsSheetOpen(true);
                         }}
-                    >Add Desings</Button>
+                    >Add Surface</Button>
                 </div>
-                <CustomTable tableDesc="A list of your Desings." url={url} columns={columns} istableUpdated={istableUpdated} />
+                <CustomTable tableDesc="A list of your surfaces." url={url} columns={columns} istableUpdated={istableUpdated} />
             </div>
 
             <CustomSheet
