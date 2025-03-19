@@ -53,7 +53,14 @@ export default function Page() {
             size: 20,
         }),
         columnHelper.accessor("name", {
-            cell: (info) => info.getValue(),
+            cell: (info) => {
+
+                return <>
+                    <span className="text-blue-600 font-medium">{info.getValue().toUpperCase()}</span>
+                    <br />
+                    <small className="text-sm text-muted-foreground">[ {info.row.original?.boxQuantity} / box ]</small>
+                </>
+            },
             header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
             size: 80
 
@@ -78,23 +85,23 @@ export default function Page() {
         columnHelper.accessor("dimensionName", {
             cell: (info) => {
                 return <>
-                <Badge variant="secondary">{info.getValue()}</Badge>
-                <br/>
-                <code>{info.row.original.surfaceName}</code>
+                    <Badge variant="secondary">{info.getValue()}</Badge>
+                    <br />
+                    <code>{info.row.original.surfaceName}</code>
                 </>
             },
             header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
             size: 50
         }),
 
-        columnHelper.accessor("boxQuantity", {
-            cell: (info) => {
-                let val = info.getValue();
-                return <Badge>{val}</Badge>
-            },
-            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
-            size: 30
-        }),
+        // columnHelper.accessor("boxQuantity", {
+        //     cell: (info) => {
+        //         let val = info.getValue();
+        //         return <Badge>{val}</Badge>
+        //     },
+        //     header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+        //     size: 30
+        // }),
         columnHelper.accessor("createdAt", {
             // cell: (info) => info.getValue(),
             cell: (info) => {
