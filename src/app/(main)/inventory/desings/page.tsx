@@ -118,7 +118,7 @@ export default function Page() {
             cell: (info: any) => (
                 <span className='flex gap-2'>
                     <Separator orientation='vertical' className='h-5' />
-                    <FilePenLine className='text-gray-500 hover:text-gray-200 cursor-pointer min-h-6 min-w-6'
+                    <FilePenLine className='text-gray-500 hover:text-gray-200 cursor-pointer min-h-4 min-w-4'
                         onClick={() => {
 
                             toast(`Your are editing id = ${info.row.original.id}  file`, {
@@ -139,7 +139,7 @@ export default function Page() {
                         }}
                     />
                     <Separator orientation='vertical' className='h-5' />
-                    <Trash className='text-red-300 hover:text-red-700 cursor-pointer  min-h-6 min-w-6'
+                    <Trash className='text-red-300 hover:text-red-700 cursor-pointer  min-h-4 min-w-4'
                         onClick={() => {
 
                             setAlertData(() => async () => {
