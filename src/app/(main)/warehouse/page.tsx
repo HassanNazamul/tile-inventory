@@ -66,7 +66,7 @@ export default function Page() {
         }),
         columnHelper.accessor("action", {
             header: (props) => <span>{props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1)}</span>,
-            cell: (info) => (
+            cell: (info: any) => (
                 <span className='flex gap-2'>
                     <Separator orientation='vertical' className='h-5' />
                     <FilePenLine className='text-gray-500 hover:text-gray-200 cursor-pointer  min-h-4 min-w-4'
