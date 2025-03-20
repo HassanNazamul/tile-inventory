@@ -6,6 +6,7 @@ import { categories } from "@db/schema";
 import { dimentions } from "@db/schema";
 import { surfaces } from "@db/schema";
 import { and, like, asc, desc, eq } from "drizzle-orm";
+import { integer } from "drizzle-orm/gel-core";
 
 
 export async function GET(req) {
@@ -168,9 +169,9 @@ export async function POST(req) {
 
         await productsRepo.create({
             name: data.name,
-            categoryId: data.categoryId,
-            dimensionId: data.dimensionId,
-            surfaceId: data.surfaceId | 0,
+            categoryId: parseInt(data.categoryId),
+            dimensionId: parseInt(data.dimensionId),
+            surfaceId: parseInt(data.surfaceId) | 0,
             boxQuantity: data.boxQuantity | 0,
         });
         return NextResponse.json({ success: true, message: "Brand added" });
@@ -184,13 +185,18 @@ export async function POST(req) {
 export async function PUT(req) {
     const data = await req.json();
 
+    const [{ surface }] = await db
+        .select({ surface: dimentions.surface })
+        .from(dimentions)
+        .where(eq(parseInt(data.dimensionId), dimentions.id));
+
     try {
-        await productsRepo.update(data.id, { 
+        await productsRepo.update(data.id, {
             name: data.name,
-            categoryId: data.categoryId,
-            dimensionId: data.dimensionId,
-            surfaceId: data.surfaceId | 0,
-            boxQuantity: data.boxQuantity | 0,
+            categoryId: parseInt(data.categoryId),
+            dimensionId: parseInt(data.dimensionId),
+            surfaceId: (surface == 0) ? 0 : parseInt(data.surfaceId) | 0,
+            boxQuantity: parseInt(data.boxQuantity) | 0,
         });
         return NextResponse.json({ success: true, message: "Brand updated" });
     } catch (error) {
