@@ -1,337 +1,232 @@
-// import ListComponent from "./list";
-// import UserFormModal from "./warehouseForm";
-
-
-'use client'
+"use client";
 import React, { useState } from "react";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-
-
-
+// import CustomDrawer from "./drawer"
+import CustomSheet from "./sheet"
+import CustomTable from "@/app/_common/customtable/table"
+import { FilePenLine, Trash } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
 import {
     createColumnHelper,
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-} from '@tanstack/react-table'
+} from '@tanstack/react-table';
+import ConfirmComponent from '@/app/_common/popup/confirmpopup';
+import axios from "axios";
+import { Badge } from "@/components/ui/badge";
 
-type Person = {
-    firstName: string
-    lastName: string
-    age: number
-    visits: number
-    status: string
-    progress: number
+const columnHelper = createColumnHelper()
+
+interface sheetDataInterface {
+    id: number,
+    warehouseId: number,
+    productId: number,
+    totalBoxesIn: number
 }
-
-const defaultData: Person[] = [
-    {
-        firstName: 'tanner',
-        lastName: 'linsley',
-        age: 24,
-        visits: 100,
-        status: 'In Relationship',
-        progress: 50,
-    },
-    {
-        firstName: 'tandy',
-        lastName: 'miller',
-        age: 40,
-        visits: 40,
-        status: 'Single',
-        progress: 80,
-    },
-    {
-        firstName: 'joe',
-        lastName: 'dirte',
-        age: 45,
-        visits: 20,
-        status: 'Complicated',
-        progress: 10,
-    },
-]
-
-const columnHelper = createColumnHelper<Person>()
-
-const columns = [
-    columnHelper.accessor('firstName', {
-        cell: info => info.getValue(),
-        header: () => <span>First Name</span>,
-        footer: info => info.column.id,
-    }),
-    columnHelper.accessor(row => row.lastName, {
-        id: 'lastName',
-        cell: info => <i>{info.getValue()}</i>,
-        header: () => <span>Last Name</span>,
-        footer: info => info.column.id,
-    }),
-    columnHelper.accessor('age', {
-        header: () => 'Age',
-        cell: info => info.renderValue(),
-        footer: info => info.column.id,
-    }),
-    columnHelper.accessor('visits', {
-        header: () => <span>Visits</span>,
-        footer: info => info.column.id,
-    }),
-    columnHelper.accessor('status', {
-        header: 'Status',
-        footer: info => info.column.id,
-    }),
-    columnHelper.accessor('progress', {
-        header: 'Profile Progress',
-        footer: info => info.column.id,
-    }),
-]
 
 export default function Page() {
 
+    const url = "/api/inventory/desings";
 
-    const [data, _setData] = useState(() => [...defaultData])
-    // const rerender = React.useReducer(() => ({}), {})[1]
+    const [istableUpdated, setIstableUpdated] = useState(1);
 
-    const table = useReactTable({
-        data,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    })
+    const [sheetData, setSheetData] = useState<sheetDataInterface>({
+        id: 0,
+        warehouseId: 0,
+        productId: 0,
+        totalBoxesIn: 0
+    }); // Store the selected row ID
+
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [isConfirmAlert, setIsConfirmAlert] = useState(false);
+
+    const [alertData, setAlertData] = useState<(() => Promise<void>) | null>(null);
+
+    // Table Columns
+    const columns = [
+        columnHelper.accessor("id", {
+            header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
+            cell: (info) => info.getValue(),
+            size: 20,
+        }),
+        columnHelper.accessor("name", {
+            cell: (info) => {
+
+                return <>
+                    <span className="text-blue-600 font-medium">{info.getValue().toUpperCase()}</span>
+                    <br />
+                    <small className="text-sm text-muted-foreground">[ {info.row.original?.boxQuantity} / box ]</small>
+                </>
+            },
+            header: ({ column }) => column.id.charAt(0).toUpperCase() + column.id.slice(1),
+            size: 80
+
+            // footer: (info) => info.column.id,
+            // enableSorting: true, // Enable sorting
+            // filterFn: "includes", // Enable search
+        }),
+        columnHelper.accessor("categoryName", {
+            cell: (info) => info.getValue(),
+            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+            size: 50
+        }),
+
+        // columnHelper.accessor("surfaceName", {
+        //     cell: (info) => {
+        //         return <Badge variant="secondary">{info.getValue()}</Badge>
+        //     },
+        //     header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+        //     size: 50
+        // }),
+
+        columnHelper.accessor("dimensionName", {
+            cell: (info) => {
+                return <>
+                    <Badge variant="secondary">{info.getValue()}</Badge>
+                    <br />
+                    <code>{info.row.original.surfaceName}</code>
+                </>
+            },
+            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+            size: 50
+        }),
+
+        // columnHelper.accessor("boxQuantity", {
+        //     cell: (info) => {
+        //         let val = info.getValue();
+        //         return <Badge>{val}</Badge>
+        //     },
+        //     header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+        //     size: 30
+        // }),
+        columnHelper.accessor("createdAt", {
+            // cell: (info) => info.getValue(),
+            cell: (info) => {
+                const date = new Date(info.getValue());
+                return <small>{date.toLocaleString()}</small>;
+            },
+            header: (props) => props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1),
+            size: 30
+        }),
 
 
-    const invoices = [
-        {
-            invoice: "INV001",
-            paymentStatus: "Paid",
-            totalAmount: "$250.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV006",
-            paymentStatus: "Pending",
-            totalAmount: "$200.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV007",
-            paymentStatus: "Unpaid",
-            totalAmount: "$300.00",
-            paymentMethod: "Credit Card",
-        },
-    ]
+        columnHelper.accessor("action", {
+            header: (props) => <span>{props.column.id.charAt(0).toUpperCase() + props.column.id.slice(1)}</span>,
+            cell: (info: any) => (
+                <span className='flex gap-2'>
+                    <Separator orientation='vertical' className='h-5' />
+                    <FilePenLine className='text-gray-500 hover:text-gray-200 cursor-pointer min-h-4 min-w-4'
+                        onClick={() => {
+
+                            toast(`Your are editing id = ${info.row.original.id}  file`, {
+                                description: "Sunday, December 03, 2023 at 9:00 AM",
+                            });
+
+                            // set the row data to the state
+                            setSheetData({
+                                id: info.row.original.id,
+                                // name: info.row.original.name,
+                                // categoryId: info.row.original.categoryId,
+                                // dimensionId: info.row.original.dimensionId,
+                                // surfaceId: info.row.original.surfaceId,
+                                // boxQuantity: info.row.original.boxQuantity,
+                                warehouseId: 0,
+                                productId: 0,
+                                totalBoxesIn: 0
+                            }); // Set the sele
+                            setIsSheetOpen(true); // Open the CustomSheet
+                            console.log("info", info.row.original.name);
+                        }}
+                    />
+                    <Separator orientation='vertical' className='h-5' />
+                    <Trash className='text-red-300 hover:text-red-700 cursor-pointer  min-h-4 min-w-4'
+                        onClick={() => {
+
+                            setAlertData(() => async () => {
+                                try {
+                                    const response = await axios.delete(url, {
+                                        headers: { "Content-Type": "application/json" },
+                                        data: { id: info.row.original.id }
+                                    });
+
+                                    // console.log("Deleted successfully:", response.data);
+                                    setIstableUpdated((prev) => prev + 1);
+
+                                    toast(`Your id = ${info.row.original.id}  file is Deleted successfully`, {
+                                        description: response.data.message,
+                                        action: {
+                                            label: "Undo",
+                                            onClick: () => console.log("Undo"),
+                                        },
+                                    });
+
+                                } catch (error) {
+                                    // console.error("Error deleting:", error);
+
+                                    toast(`Your id = ${info.row.original.id}  file is Delete failed`, {
+                                        description: "Failed,",
+                                        // action: {
+                                        //     label: "Undo",
+                                        //     onClick: () => console.log("Undo"),
+                                        // },
+                                    });
+                                }
+                            });
+
+
+                            setIsConfirmAlert(true);
+
+                        }}
+                    />
+                    <Separator orientation='vertical' className='h-5' />
+
+                </span>
+            ),
+            size: 25
+
+            // footer: (info) => "",
+            // enableSorting: false, // Disable sorting for action column
+        }),
+    ];
+
 
     return (
         <div className="flex flex-col gap-4 p-4 pt-0">
 
             <div className="flex-1 rounded-xl bg-muted/50 p-2">
-                <Table className="gap-4">
+                <div className="flex gap-4 justify-end">
+                    {/* <CustomDrawer /> */}
 
-                    <TableCaption>A list of your recent invoices.</TableCaption>
-
-                    <TableHeader className="hover:rounded-xl">
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map(header => (
-                                    <TableHead key={header.id} className="w-[7000px]">
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-
-                    <TableBody>
-
-                        {table.getRowModel().rows.map(row => (
-                            <TableRow key={row.id}>
-                                {row.getVisibleCells().map(cell => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-
-                    <TableFooter>
-                        {table.getFooterGroups().map(footerGroup => (
-                            <TableRow key={footerGroup.id}>
-                                {footerGroup.headers.map(header => (
-                                    <TableCell key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.footer,
-                                                header.getContext()
-                                            )}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableFooter>
-
-                </Table>
+                    {/* Button to Open Sheet */}
+                    <Button variant="outline"
+                        onClick={() => {
+                            setSheetData({
+                                id: 0,
+                                warehouseId: 0,
+                                productId: 0,
+                                totalBoxesIn: 0
+                            });
+                            setIsSheetOpen(true);
+                        }}
+                    >Add Desings</Button>
+                </div>
+                <CustomTable tableDesc="A list of your Desings." url={url} columns={columns} istableUpdated={istableUpdated} />
             </div>
 
-            <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-            </div>
+            <CustomSheet
+                istableUpdated={istableUpdated}
+                setIstableUpdated={setIstableUpdated}
+                isOpen={isSheetOpen}
+                onClose={() => setIsSheetOpen(false)}
+                sheetData={sheetData}
+                setSheetData={setSheetData}
+                url={url}
+            />
 
-            <div className="flex-1 rounded-xl bg-muted/50 p-2">
-                <Table className="gap-4">
-
-                    <TableCaption>A list of your recent invoices.</TableCaption>
-
-                    <TableHeader className="hover:rounded-xl">
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map(header => (
-                                    <TableHead key={header.id} className="w-[7000px]">
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-
-                    <TableBody>
-
-                        {table.getRowModel().rows.map(row => (
-                            <TableRow key={row.id}>
-                                {row.getVisibleCells().map(cell => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-
-                    <TableFooter>
-                        {table.getFooterGroups().map(footerGroup => (
-                            <TableRow key={footerGroup.id}>
-                                {footerGroup.headers.map(header => (
-                                    <TableCell key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.footer,
-                                                header.getContext()
-                                            )}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableFooter>
-
-                </Table>
-            </div>
-
-            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-            </div>
-
-            <div className="flex-1 rounded-xl bg-muted/50 p-2">
-                <Table className="gap-4">
-
-                    <TableCaption>A list of your recent invoices.</TableCaption>
-
-                    <TableHeader className="hover:rounded-xl">
-                        {table.getHeaderGroups().map(headerGroup => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map(header => (
-                                    <TableHead key={header.id} className="w-[7000px]">
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-
-                    <TableBody>
-
-                        {table.getRowModel().rows.map(row => (
-                            <TableRow key={row.id}>
-                                {row.getVisibleCells().map(cell => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-
-                    <TableFooter>
-                        {table.getFooterGroups().map(footerGroup => (
-                            <TableRow key={footerGroup.id}>
-                                {footerGroup.headers.map(header => (
-                                    <TableCell key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.footer,
-                                                header.getContext()
-                                            )}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableFooter>
-
-                </Table>
-            </div>
+            <ConfirmComponent
+                isOpen={isConfirmAlert}
+                onClose={() => setIsConfirmAlert(false)}
+                confirm={alertData}
+            />
         </div>
     )
 }
-
