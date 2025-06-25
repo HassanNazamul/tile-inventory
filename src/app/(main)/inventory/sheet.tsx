@@ -57,8 +57,6 @@ interface CustomSheetProps {
 }
 
 export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen, onClose, sheetData, setSheetData, url }: CustomSheetProps) {
-    console.log("CustomSheet -> sheetData", sheetData)
-
 
     const [warehouses, setWarehouses] = useState<any[]>([]);
     const [searchData, setSearchData] = useState<any[]>([]);
@@ -93,8 +91,8 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
         }
     }
 
-    const handleSelectProduct = (product: any) => {
-        console.log(product);
+    const handleSelectdesign = (product: object) => {
+        setSheetData({ ...sheetData, productId: String(product.id) });
     }
 
 
@@ -112,6 +110,8 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
             });
 
             if (response) {
+
+                console.log("Response:", response.data);
 
                 toast(response.data.message, {
                     description: "Sunday, December 03, 2023 at 9:00 AM",
@@ -157,30 +157,8 @@ export default function CustomSheet({ istableUpdated, setIstableUpdated, isOpen,
 
                     <form onSubmit={handleSubmit}>
                         <CardContent className="space-y-4">
-                            {/* <div className="grid gap-2">
-                                <Label htmlFor="name">Desing Name</Label>
-                                <Input type="text" name="name" placeholder="Search desing..." onChange={handleSearch} required />
-                                <small className="font-thin  text-teal-500">Search desing or brand?</small>
-                            </div>
-                            <div className="max-h-[120px] overflow-y-auto custom-scrollbar border border-gray-400 ">
-                                {searchData.length > 0 && (
-                                    <ul className="list-group mt-2">
-                                        {searchData.map((product) => (
-                                            <li
-                                                key={product.id}
-                                                className="list-group-item list-group-item-action"
-                                                onClick={() => handleSelectProduct(product)}
-                                                style={{ cursor: "pointer" }}
-                                            >
-                                                {product.categoryName} >   {product.name} - {product.boxQuantity}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div> */}
-
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Design Name</Label>
+                                <Label htmlFor="name">Search Design Name</Label>
                                 <Input
                                     type="text"
                                     name="name"
